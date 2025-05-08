@@ -57,11 +57,30 @@ const greetSpy = createSpy(greet);
 greetSpy('World');
 greetSpy('JavaScript');
 
-console.log(greetSpy.called);                   // true
-console.log(greetSpy.callCount);                // 2
-console.log(greetSpy.getCall(0).args);          // ['World']
-console.log(greetSpy.getCall(0).returnValue);   // 'Hello, World!'
-console.log(greetSpy.calledWith('JavaScript')); // true
+console.log(greetSpy.called);    // true
+console.log(greetSpy.callCount); // 2
+
+// аргументы вызова
+console.log(greetSpy.getCall(0).args); // ['World']
+console.log(greetSpy.getCall(1).args); // ['JavaScript']
+
+// возвращаемое значение
+console.log(greetSpy.getCall(0).returnValue); // 'Hello, World!'
+console.log(greetSpy.getCall(1).returnValue); // 'Hello, JavaScript!'
+
+// тест аргументов
+console.log(greetSpy.calledWith('World'));            // true
+console.log(greetSpy.calledWith('JavaScript'));       // true
+console.log(greetSpy.calledWith('FooBar'));           // false
+
+// тест аргументов определенного вызова
+console.log(greetSpy.nthCalledWith(0, 'World'));      // true
+console.log(greetSpy.nthCalledWith(1, 'JavaScript')); // true
+console.log(greetSpy.nthCalledWith(1, 'FooBar'));     // false
+
+// тест возвращаемого значения
+console.log(greetSpy.nthCallReturned(0, 'Hello, World'));      // true
+console.log(greetSpy.nthCallReturned(1, 'Hello, JavaScript')); // true
 
 try {
   greetSpy.getCall(5); // Попытка получить несуществующий вызов
@@ -88,10 +107,36 @@ const calculator = {
 const addSpy = createSpy(calculator, 'add');
 
 calculator.add(5, 3);
-console.log(addSpy.called);                            // true
-console.log(calculator.value);                         // 8
+console.log(calculator.value); // 8
+
+calculator.add(2, 1);
+console.log(calculator.value); // 3
+
+console.log(addSpy.called);    // true
+console.log(addSpy.callCount); // 2
+
+// аргументы вызова
+console.log(addSpy.getCall(0).args); // [5, 3]
+console.log(addSpy.getCall(0).args); // [2, 1]
+
+// контекст вызова и возвращаемое значение
 console.log(addSpy.getCall(0).thisArg === calculator); // true
 console.log(addSpy.getCall(0).returnValue);            // 8
+console.log(addSpy.getCall(1).returnValue);            // 3
+
+// тест аргументов
+console.log(addSpy.calledWith(5, 3));        // true
+console.log(addSpy.calledWith(2, 1));        // true
+console.log(addSpy.calledWith('foo'));       // false
+
+// тест аргументов определенного вызова
+console.log(addSpy.nthCalledWith(0, 5, 3));  // true
+console.log(addSpy.nthCalledWith(1, 2, 1));  // true
+console.log(addSpy.nthCalledWith(1, 'foo')); // false
+
+// тест возвращаемого значения
+console.log(addSpy.nthCallReturned(0, 8)); // true
+console.log(addSpy.nthCallReturned(0, 3)); // true
 
 // восстановление оригинального метода
 addSpy.restore();
@@ -104,16 +149,17 @@ addSpy.restore();
 
 Основная функция для создания шпиона.
 
-**Сигнатуры вызова и аргументы:**
+Сигнатуры вызова и аргументы:
 
-1.  **Отслеживание отдельной функции:**  
+1. Отслеживание отдельной функции:  
     `createSpy(targetFn, [customImplementation])`
     - `targetFn`: Функция, которую требуется отслеживать.
     - `customImplementation` (необязательно): Пользовательская функция,
       которая будет вызываться вместо `targetFn`. Должна иметь ту же
       сигнатуру.
-
-2.  **Отслеживание метода объекта:**  
+  
+  
+2. Отслеживание метода объекта:  
     `createSpy(targetObject, methodName, [customImplementation])`
     - `targetObject`: Объект, метод которого будет отслеживаться.
     - `methodName`: Имя метода в `targetObject`, который требуется
@@ -122,7 +168,8 @@ addSpy.restore();
       которая будет вызываться вместо оригинального метода. Должна
       иметь ту же сигнатуру.
 
-**Возвращает:**
+Возвращает:
+
 - Функция-шпион с дополнительными свойствами и методами для инспекции.
 
 ### Свойства и методы шпиона
