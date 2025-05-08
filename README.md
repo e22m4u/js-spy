@@ -69,9 +69,9 @@ console.log(greetSpy.getCall(0).returnValue); // 'Hello, World!'
 console.log(greetSpy.getCall(1).returnValue); // 'Hello, JavaScript!'
 
 // тест аргументов
-console.log(greetSpy.calledWith('World'));            // true
-console.log(greetSpy.calledWith('JavaScript'));       // true
-console.log(greetSpy.calledWith('FooBar'));           // false
+console.log(greetSpy.calledWith('World'));      // true
+console.log(greetSpy.calledWith('JavaScript')); // true
+console.log(greetSpy.calledWith('FooBar'));     // false
 
 // тест аргументов определенного вызова
 console.log(greetSpy.nthCalledWith(0, 'World'));      // true
@@ -117,12 +117,15 @@ console.log(addSpy.callCount); // 2
 
 // аргументы вызова
 console.log(addSpy.getCall(0).args); // [5, 3]
-console.log(addSpy.getCall(0).args); // [2, 1]
+console.log(addSpy.getCall(1).args); // [2, 1]
 
-// контекст вызова и возвращаемое значение
+// возвращаемое значение
+console.log(addSpy.getCall(0).returnValue); // 8
+console.log(addSpy.getCall(1).returnValue); // 3
+
+// контекст вызова
 console.log(addSpy.getCall(0).thisArg === calculator); // true
-console.log(addSpy.getCall(0).returnValue);            // 8
-console.log(addSpy.getCall(1).returnValue);            // 3
+console.log(addSpy.getCall(1).thisArg === calculator); // true
 
 // тест аргументов
 console.log(addSpy.calledWith(5, 3));        // true
@@ -136,7 +139,7 @@ console.log(addSpy.nthCalledWith(1, 'foo')); // false
 
 // тест возвращаемого значения
 console.log(addSpy.nthCallReturned(0, 8)); // true
-console.log(addSpy.nthCallReturned(0, 3)); // true
+console.log(addSpy.nthCallReturned(1, 3)); // true
 
 // восстановление оригинального метода
 addSpy.restore();
