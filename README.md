@@ -128,9 +128,9 @@ console.log(addSpy.getCall(0).thisArg === calculator); // true
 console.log(addSpy.getCall(1).thisArg === calculator); // true
 
 // тест аргументов
-console.log(addSpy.calledWith(5, 3));        // true
-console.log(addSpy.calledWith(2, 1));        // true
-console.log(addSpy.calledWith('foo'));       // false
+console.log(addSpy.calledWith(5, 3));  // true
+console.log(addSpy.calledWith(2, 1));  // true
+console.log(addSpy.calledWith('foo')); // false
 
 // тест аргументов определенного вызова
 console.log(addSpy.nthCalledWith(0, 5, 3));  // true
