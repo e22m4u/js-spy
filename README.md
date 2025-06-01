@@ -24,7 +24,7 @@
   - [createSpiesGroup()](#createspiesgroup)
   - [Методы SpiesGroup](#методы-spiesgroup)
     - [group.on(target, [methodNameOrImpl], [customImplForMethod])](#groupon)
-    - [group.restore() (для группы)](#grouprestore-для-группы)
+    - [group.restore()](#grouprestore)
 - [Тесты](#тесты)
 - [Лицензия](#лицензия)
 
