@@ -159,6 +159,7 @@ addSpy.restore();
 ```js
 import {createSpiesGroup} from '@e22m4u/js-spy';
 
+// объект с методами для отслеживания
 const service = {
   fetchData(id) {
     console.log(`Fetching data for ${id}...`);
@@ -170,11 +171,12 @@ const service = {
   }
 };
 
+// одиночная функция для отслеживания
 function standaloneLogger(message) {
   console.log(`LOG: ${message}`);
 }
 
-// создаем группу
+// создание группы
 const group = createSpiesGroup();
 
 // добавление шпионов в группу:
@@ -587,21 +589,29 @@ console.log(greetSpy.called); // true
 ```js
 const group = createSpiesGroup();
 
+// объект с методом для отслеживания
 const service = {
   process() { /* ... */ }
 };
 
+// одиночная функция для отслеживания
 function utilFn() { /* ... */ }
 
+// создание шпионов
 const processSpy = group.on(service, 'process');
 const utilSpy = group.on(utilFn);
 
+// вызов отслеживаемого метода и функции
+// для изменения истории вызовов
 service.process();
 utilFn();
 
+// проверка количества вызовов
 console.log(processSpy.callCount); // 1
 console.log(utilSpy.callCount);    // 1
 
+// восстановление шпионов
+// и сброс истории
 group.restore();
 
 // service.process теперь оригинальный метод
