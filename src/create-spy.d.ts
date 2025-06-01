@@ -75,9 +75,9 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
   /**
    * Получает детали n-го вызова шпиона.
    * Если вызов с указанным индексом `n` не существует, выбрасывает `RangeError`.
-   * @param n Индекс вызова (начиная с нуля).
    *
-   * @returns Объект `CallInfo` для n-го вызова.
+   * @param   n           Индекс вызова (начиная с нуля).
+   * @returns             Объект `CallInfo` для n-го вызова.
    * @throws `RangeError` если индекс `n` невалиден.
    */
   getCall(n: number): CallInfo<Parameters<TFunc>, ReturnType<TFunc>>;
@@ -87,8 +87,8 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
    * Использует `Object.is` для сравнения аргументов.
    *
    * @param expectedArgs Ожидаемые аргументы для проверки.
-   * @returns `true`, если шпион был вызван с совпадающими
-   *   аргументами, иначе `false`.
+   * @returns            `true`, если шпион был вызван с совпадающими
+   *                     аргументами, иначе `false`.
    */
   calledWith(...expectedArgs: Parameters<TFunc>): boolean;
 
@@ -97,11 +97,11 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
    * Использует `Object.is` для сравнения аргументов.
    * Если вызов с указанным индексом `n` не существует, выбрасывает `RangeError`.
    *
-   * @param n Индекс вызова (начиная с нуля).
-   * @param expectedArgs Ожидаемые аргументы для проверки.
-   * @returns `true`, если n-ый вызов имел совпадающие
-   *   аргументы, иначе `false`.
-   * @throws `RangeError` если индекс `n` невалиден (унаследовано от `getCall`).
+   * @param   n            Индекс вызова (начиная с нуля).
+   * @param   expectedArgs Ожидаемые аргументы для проверки.
+   * @returns              `true`, если n-ый вызов имел совпадающие
+   *                       аргументы, иначе `false`.
+   * @throws  `RangeError` если индекс `n` невалиден (унаследовано от `getCall`).
    */
   nthCalledWith(n: number, ...expectedArgs: Parameters<TFunc>): boolean;
 
@@ -110,11 +110,11 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
    * Использует `Object.is` для сравнения значений.
    * Если вызов с указанным индексом `n` не существует, выбрасывает `RangeError`.
    *
-   * @param n Индекс вызова (начиная с нуля).
-   * @param expectedReturnValue Ожидаемое возвращаемое значение.
-   * @returns `true`, если n-ый вызов вернул ожидаемое значение, иначе `false`
-   *   (включая случаи, когда он выбросил ошибку).
-   * @throws `RangeError` если индекс `n` невалиден (унаследовано от `getCall`).
+   * @param   n                   Индекс вызова (начиная с нуля).
+   * @param   expectedReturnValue Ожидаемое возвращаемое значение.
+   * @returns                     `true`, если n-ый вызов вернул ожидаемое значение,
+   *                              иначе `false` (включая случаи, когда он выбросил ошибку).
+   * @throws  `RangeError`        если индекс `n` невалиден (унаследовано от `getCall`).
    */
   nthCallReturned(n: number, expectedReturnValue: ReturnType<TFunc>): boolean;
 
@@ -122,15 +122,16 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
    * Проверяет, выбросил ли n-ый вызов шпиона ошибку.
    * Если вызов с указанным индексом `n` не существует, выбрасывает `RangeError`.
    *
-   * @param n Индекс вызова (начиная с нуля).
+   * @param n             Индекс вызова (начиная с нуля).
    * @param expectedError Необязательно.
-   *   Если предоставлено, проверяет соответствие выброшенной ошибки:
-   *     - `string`: совпадение по сообщению ошибки.
-   *     - Конструктор `Error`: совпадение через `instanceof`.
-   *     - Экземпляр `Error`: совпадение по имени и сообщению ошибки.
-   *     - Прямое сравнение объектов с использованием `Object.is`.
-   * @returns `true`, если n-ый вызов выбросил совпадающую ошибку
-   *   (или любую ошибку, если матчер не предоставлен), иначе `false` (если вызов не бросил ошибку).
+   *                      Если предоставлено, проверяет соответствие выброшенной ошибки:
+   *                        - `string`: совпадение по сообщению ошибки.
+   *                        - Конструктор `Error`: совпадение через `instanceof`.
+   *                        - Экземпляр `Error`: совпадение по имени и сообщению ошибки.
+   *                        - Прямое сравнение объектов с использованием `Object.is`.
+   * @returns             `true`, если n-ый вызов выбросил совпадающую ошибку
+   *                      (или любую ошибку, если матчер не предоставлен),
+   *                      иначе `false` (если вызов не бросил ошибку).
    * @throws `RangeError` если индекс `n` невалиден (унаследовано от `getCall`).
    */
   nthCallThrew(
@@ -149,11 +150,12 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
 /**
  * Создает шпиона для отдельной функции.
  *
- * @template TFunc Тип функции, для которой создается шпион.
- * @param targetFn Функция, для которой создается шпион.
- * @param customImplementation Необязательно. Функция для замены поведения
- *   оригинальной функции. Должна иметь ту же сигнатуру, что и `targetFn`.
- * @returns Функция-шпион.
+ * @template TFunc                Тип функции, для которой создается шпион.
+ * @param    targetFn             Функция, для которой создается шпион.
+ * @param    customImplementation Необязательно. Функция для замены поведения
+ *                                оригинальной функции. Должна иметь ту же
+ *                                сигнатуру, что и `targetFn`.
+ * @returns                       Функция-шпион.
  */
 export function createSpy<TFunc extends AnyCallable>(
   targetFn: TFunc,
@@ -161,19 +163,19 @@ export function createSpy<TFunc extends AnyCallable>(
 ): Spy<TFunc>;
 
 /**
- * Создает шпиона для метода объекта.
- * Оригинальный метод объекта будет заменен шпионом.
- * Используйте `spy.restore()` для восстановления оригинального метода.
+ * Создание шпиона для метода объекта. Оригинальный метод объекта будет заменен
+ * шпионом. Используйте `spy.restore()` для восстановления оригинального метода.
  *
  * @template TObj Тип объекта.
- * @template K Ключ метода, для которого создается шпион.
- *   Должен быть ключом `TObj`, значение которого является функцией.
- * @param targetObject Объект, метод которого отслеживается.
- * @param methodName Имя отслеживаемого метода.
- * @param customImplementation Необязательно. Функция для замены поведения
- *   оригинального метода. Должна иметь ту же сигнатуру, что и оригинальный
- *   метод `TObj[K]`.
- * @returns Функция-шпион для метода.
+ * @template K                    Ключ метода, для которого создается шпион.
+ *                                Должен быть ключом `TObj`, значение которого
+ *                                является функцией.
+ * @param    targetObject         Объект, метод которого отслеживается.
+ * @param    methodName           Имя отслеживаемого метода.
+ * @param    customImplementation Необязательно. Функция для замены поведения
+ *                                оригинального метода. Должна иметь ту же сигнатуру,
+ *                                что и оригинальный метод `TObj[K]`.
+ * @returns                       Функция-шпион для метода.
  */
 export function createSpy<
   TObj extends object,

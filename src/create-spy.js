@@ -298,13 +298,20 @@ export function createSpy(target, methodNameOrImpl, customImplForMethod) {
     return Object.is(call.error, expectedError);
   };
   // определение метода `restore` для восстановления
-  // оригинального метода объекта, если шпионили за ним
+  // оригинального метода объекта и сброса истории вызовов
   spy.restore = () => {
-    // восстановление происходит только
-    // для шпионов методов объектов
+    // восстановление оригинального метода
+    // объекта, если шпионили за ним
     if (isMethodSpy && objToSpyOn) {
-      objToSpyOn[methodName] = originalFn;
+      // проверка, что originalFn существует (на всякий случай,
+      // хотя по логике _parseSpyArgs он должен быть)
+      if (originalFn !== undefined) {
+        objToSpyOn[methodName] = originalFn;
+      }
     }
+    // сброс истории вызовов
+    callLog.count = 0;
+    callLog.calls = [];
   };
   // если создается шпион для метода объекта,
   // оригинальный метод немедленно заменяется шпионом

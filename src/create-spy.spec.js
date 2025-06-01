@@ -174,6 +174,25 @@ describe('createSpy', function () {
       // проверка сохраненного контекста
       expect(spy.getCall(0).thisArg).to.equal(contextObj);
     });
+
+    it('restore() on a function spy should reset its history and not throw', function () {
+      const standaloneFn = () => 'standalone result';
+      const fnSpy = createSpy(standaloneFn);
+      // вызов шпиона, чтобы у него была история
+      fnSpy('call standalone');
+      expect(fnSpy.called).to.be.true;
+      expect(fnSpy.callCount).to.equal(1);
+      expect(fnSpy.getCall(0).args).to.deep.equal(['call standalone']);
+      // проверка, что вызов restore не вызывает ошибок
+      expect(() => fnSpy.restore()).to.not.throw();
+      // проверки сброса истории
+      expect(fnSpy.callCount).to.equal(0);
+      expect(fnSpy.called).to.be.false;
+      expect(() => fnSpy.getCall(0)).to.throw(
+        RangeError,
+        'Invalid call index 0. Spy has 0 call(s).',
+      );
+    });
   });
 
   describe('when spying on an object method', function () {
@@ -242,10 +261,13 @@ describe('createSpy', function () {
       expect(spy.getCall(0).thisArg).to.equal(obj);
     });
 
-    it('restore() should put the original method back', function () {
+    it('restore() should put the original method back and reset spy history', function () {
       // создание шпиона для метода
       const spy = createSpy(obj, 'method');
-      // проверка, что метод заменен
+      // вызов шпиона, чтобы у него была история
+      obj.method('call before restore');
+      expect(spy.called).to.be.true;
+      expect(spy.callCount).to.equal(1);
       expect(obj.method).to.equal(spy);
       // вызов метода restore на шпионе
       spy.restore();
@@ -253,22 +275,28 @@ describe('createSpy', function () {
       expect(obj.method).to.equal(originalMethodImpl);
       // вызов восстановленного метода
       // для проверки его работоспособности
-      const result = obj.method('after restore');
-      // проверка результата вызова
-      // оригинального метода
-      expect(result).to.equal('original: TestObj after restore');
+      const result = obj.method('call after restore');
+      // проверка результата вызова оригинального метода
+      expect(result).to.equal('original: TestObj call after restore');
+      // проверки сброса истории
+      expect(spy.callCount).to.equal(0);
+      expect(spy.called).to.be.false;
+      expect(() => spy.getCall(0)).to.throw(
+        RangeError,
+        'Invalid call index 0. Spy has 0 call(s).',
+      );
     });
 
-    it('restore() on a function spy should not throw and do nothing to objects', function () {
-      // создание шпиона для отдельной функции
-      const fnSpy = createSpy(function () {});
-      // проверка, что вызов restore
-      // не вызывает ошибок
-      expect(() => fnSpy.restore()).to.not.throw();
-      // проверка, что метод объекта не был изменен,
-      // так как шпион не был на нем установлен
-      expect(obj.method).to.equal(originalMethodImpl);
-    });
+    // Этот тест стал частью теста для standalone функции, но если хочешь оставить его здесь для ясности
+    // относительно влияния на `obj` (из beforeEach), то можно.
+    // Я бы его убрал, т.к. его суть (restore на fnSpy не трогает obj.method)
+    // покрывается тем, что fnSpy.restore() вообще не должен иметь дела с obj.
+    // Для чистоты, я перенес логику проверки истории в тест для standalone шпиона выше.
+    // it('restore() on a function spy should not throw and do nothing to objects', function () {
+    //   const fnSpy = createSpy(function () {});
+    //   expect(() => fnSpy.restore()).to.not.throw();
+    //   expect(obj.method).to.equal(originalMethodImpl); // obj из beforeEach
+    // });
   });
 
   describe('spy properties and methods', function () {
@@ -476,7 +504,6 @@ describe('createSpy', function () {
         } catch (e) {
           // бросает ошибку
         }
-
         // проверки для различных сценариев
         expect(spy.nthCallReturned(0, 4)).to.be.false;
         expect(spy.nthCallReturned(1, undefined)).to.be.false;

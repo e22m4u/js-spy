@@ -1,6 +1,6 @@
 # @e22m4u/js-spy
 
-Утилита слежения за вызовом функций и методов для JavaScript.
+Утилита слежения за вызовом функций и методов для JavaScript. Позволяет создавать "шпионов" для функций или методов объектов, отслеживать их вызовы, аргументы, возвращаемые значения, выброшенные ошибки, а также управлять группой шпионов.
 
 ## Содержание
 
@@ -8,6 +8,7 @@
 - [Использование](#использование)
   - [Отслеживание вызова функции](#отслеживание-вызова-функции)
   - [Отслеживание вызова метода](#отслеживание-вызова-метода)
+  - [Управление группой шпионов (SpiesGroup)](#управление-группой-шпионов-spiesgroup)
 - [API](#api)
   - [createSpy(target, [methodNameOrImpl], [customImplForMethod])](#createspytarget-methodnameorimpl-customimplformethod)
   - [Свойства и методы шпиона](#свойства-и-методы-шпиона)
@@ -20,6 +21,10 @@
     - [spy.nthCallReturned(n, expectedReturnValue)](#spynthcallreturnedn-expectedreturnvalue)
     - [spy.nthCallThrew(n, [expectedError])](#spynthcallthrewn-expectederror)
     - [spy.restore()](#spyrestore)
+  - [createSpiesGroup()](#createspiesgroup)
+  - [Методы SpiesGroup](#методы-spiesgroup)
+    - [group.on(target, [methodNameOrImpl], [customImplForMethod])](#groupon)
+    - [group.restore() (для группы)](#grouprestore-для-группы)
 - [Тесты](#тесты)
 - [Лицензия](#лицензия)
 
@@ -33,17 +38,17 @@ npm install @e22m4u/js-spy
 
 *ESM*
 ```js
-import {createSpy} from '@e22m4u/js-spy';
+import {createSpy, createSpiesGroup} from '@e22m4u/js-spy';
 ```
 
 *CommonJS*
 ```js
-const {createSpy} = require('@e22m4u/js-spy');
+const {createSpy, createSpiesGroup} = require('@e22m4u/js-spy');
 ```
 
 ## Использование
 
-Отслеживание вызова функции.
+### Отслеживание вызова функции:
 
 ```js
 import {createSpy} from '@e22m4u/js-spy';
@@ -91,7 +96,7 @@ try {
 }
 ```
 
-Отслеживание вызова метода.
+### Отслеживание вызова метода:
 
 ```js
 import {createSpy} from '@e22m4u/js-spy';
@@ -146,6 +151,66 @@ addSpy.restore();
 // calculator.add теперь снова оригинальный метод
 ```
 
+### Управление группой шпионов (SpiesGroup)
+
+Иногда бывает удобно управлять несколькими шпионами одновременно,
+например, восстановить их все разом. Для этого используется `SpiesGroup`.
+
+```js
+import {createSpiesGroup} from '@e22m4u/js-spy';
+
+const service = {
+  fetchData(id) {
+    console.log(`Fetching data for ${id}...`);
+    return {id, data: `Data for ${id}`};
+  },
+  processItem(item) {
+    console.log(`Processing ${item.data}...`);
+    return `Processed: ${item.data}`;
+  }
+};
+
+function standaloneLogger(message) {
+  console.log(`LOG: ${message}`);
+}
+
+// создаем группу
+const group = createSpiesGroup();
+
+// добавление шпионов в группу:
+//   метод group.on() работает аналогично createSpy(),
+//   но добавляет шпиона в группу и возвращает созданного
+//   шпиона
+const fetchDataSpy = group.on(service, 'fetchData');
+const processItemSpy = group.on(service, 'processItem');
+const loggerSpy = group.on(standaloneLogger);
+
+// вызов отслеживаемых функций/методов
+const data = service.fetchData(1);
+service.processItem(data);
+standaloneLogger('All done!');
+
+console.log(fetchDataSpy.callCount);   // 1
+console.log(processItemSpy.callCount); // 1
+console.log(loggerSpy.callCount);      // 1
+
+// восстановление всех шпионов в группе:
+//   - оригинальные методы service.fetchData
+//     и service.processItem будут восстановлены
+//   - история вызовов (callCount, called, getCall и т.д.)
+//     для fetchDataSpy, processItemSpy и loggerSpy
+//     будет сброшена
+//   - внутренний список шпионов в группе будет очищен
+group.restore();
+
+console.log(service.fetchData === fetchDataSpy);
+// false (оригинальный метод восстановлен)
+console.log(fetchDataSpy.callCount);
+// 0 (история сброшена)
+console.log(loggerSpy.called);
+// false (история сброшена)
+```
+
 ## API
 
 ### createSpy(target, [methodNameOrImpl], [customImplForMethod])
@@ -177,8 +242,8 @@ addSpy.restore();
 
 ### Свойства и методы шпиона
 
-Каждая функция-шпион, возвращаемая `createSpy`, обладает следующими
-свойствами и методами:
+Каждая функция-шпион, возвращаемая `createSpy` (или `group.on`), обладает
+следующими свойствами и методами:
 
 #### spy(...args)
 
@@ -187,7 +252,7 @@ addSpy.restore();
 записывает информацию о вызове и возвращает результат (или пробрасывает
 ошибку).
 
-```javascript
+```js
 const fn = (x) => x * 2;
 const spy = createSpy(fn);
 
@@ -200,7 +265,7 @@ console.log(spy.callCount); // 1
 - **Тип:** `boolean` (только для чтения)
 - **Описание:** Указывает, был ли шпион вызван хотя бы один раз.
 
-```javascript
+```js
 const spy = createSpy(() => {});
 console.log(spy.called); // false
 spy();
@@ -212,7 +277,7 @@ console.log(spy.called); // true
 - **Тип:** `number` (только для чтения)
 - **Описание:** Количество раз, которое шпион был вызван.
 
-```javascript
+```js
 const spy = createSpy(() => {});
 console.log(spy.callCount); // 0
 spy();
@@ -240,7 +305,7 @@ console.log(spy.callCount); // 2
 
 Пример:
 
-```javascript
+```js
 const spy = createSpy((a, b) => a + b);
 spy.call({ id: 1 }, 10, 20); // 0-й вызов
 
@@ -270,7 +335,7 @@ try {
 
 Пример:
 
-```javascript
+```js
 const spy = createSpy(() => {});
 spy(1, 'a', true);
 spy(2, 'b');
@@ -301,7 +366,7 @@ console.log(spy.calledWith(2, 'c'));       // false
 
 Пример:
 
-```javascript
+```js
 const spy = createSpy(() => {});
 spy('first call');
 spy('second call', 123);
@@ -339,7 +404,7 @@ try {
 
 Пример:
 
-```javascript
+```js
 const spy = createSpy(val => {
   if (val === 0) throw new Error('zero');
   return val * 10;
@@ -393,7 +458,7 @@ try {
 
 Пример:
 
-```javascript
+```js
 const mightThrow = (val) => {
   if (val === 0) throw new TypeError('Zero is not allowed');
   if (val < 0) throw new Error('Negative value');
@@ -422,23 +487,127 @@ try {
 
 Описание:
 
-- Если шпион был создан для метода объекта, этот метод
-  восстанавливает оригинальный метод на объекте.
-- Если шпион был создан для отдельной функции, вызов этого метода
-  ничего не делает.
+- Восстанавливает оригинальный метод, если шпион был создан
+  для метода объекта.
+- Сбрасывает историю вызовов шпиона (`callCount` становится 0,
+  `called` становится `false`, и все записи о вызовах очищаются).
+- Если шпион был создан для отдельной функции (а не для метода объекта),
+  восстановление метода не происходит (так как нечего восстанавливать),
+  но история вызовов все равно сбрасывается.
 
-```javascript
+```js
+// для метода объекта
 const myObject = {
   doSomething() {
     return 'original';
   }
 };
 
-const spy = createSpy(myObject, 'doSomething');
-// myObject.doSomething(); // может быть вызван шпион
+const methodSpy = createSpy(myObject, 'doSomething');
+// вызов шпиона
+myObject.doSomething();
+console.log(methodSpy.callCount); // 1
 
-spy.restore();
-console.log(myObject.doSomething()); // 'original'
+// восстановление метода
+methodSpy.restore();
+console.log(myObject.doSomething()); // 'original' (метод восстановлен)
+console.log(methodSpy.callCount);    // 0 (история сброшена)
+
+// для отдельной функции
+const fn = () => 'result';
+const fnSpy = createSpy(fn);
+fnSpy();
+console.log(fnSpy.callCount); // 1
+
+// сброс истории функции
+fnSpy.restore();
+console.log(fnSpy.callCount); // 0 (история сброшена)
+```
+
+### createSpiesGroup()
+
+Фабричная функция для создания экземпляра `SpiesGroup`.
+
+Возвращает:
+
+- Новый экземпляр `SpiesGroup`.
+
+```js
+import {createSpiesGroup} from '@e22m4u/js-spy';
+const group = createSpiesGroup();
+```
+
+### Методы SpiesGroup
+
+Экземпляр `SpiesGroup` имеет следующие методы:
+
+#### group.on(target, [methodNameOrImpl], [customImplForMethod])
+
+Создает шпиона (используя `createSpy` с теми же аргументами) и добавляет
+его в группу.
+
+Сигнатуры вызова и аргументы идентичны `createSpy`:
+
+1. `group.on(targetFn, [customImplementation])`
+2. `group.on(targetObject, methodName, [customImplementation])`
+
+Возвращает:
+
+- Созданную функцию-шпион (такую же, как вернул бы `createSpy`).
+
+Пример:
+
+```js
+const group = createSpiesGroup();
+const obj = {greet: () => 'Hello'};
+
+const greetSpy = group.on(obj, 'greet');
+// obj.greet теперь шпион, и greetSpy добавлен в группу
+obj.greet();
+console.log(greetSpy.called); // true
+```
+
+#### group.restore()
+
+Вызывает метод `restore()` для каждого шпиона, содержащегося в группе.
+Это означает, что:
+
+- Все оригинальные методы объектов, для которых были созданы шпионы
+  в этой группе, будут восстановлены.
+- История вызовов всех шпионов в группе будет сброшена.
+- Внутренний список шпионов в самой группе будет очищен, делая группу
+  готовой к повторному использованию (если необходимо).
+
+Возвращает:
+
+- `this` (экземпляр `SpiesGroup`) для возможной цепочки вызовов.
+
+Пример:
+
+```js
+const group = createSpiesGroup();
+
+const service = {
+  process() { /* ... */ }
+};
+
+function utilFn() { /* ... */ }
+
+const processSpy = group.on(service, 'process');
+const utilSpy = group.on(utilFn);
+
+service.process();
+utilFn();
+
+console.log(processSpy.callCount); // 1
+console.log(utilSpy.callCount);    // 1
+
+group.restore();
+
+// service.process теперь оригинальный метод
+console.log(processSpy.callCount); // 0
+console.log(utilSpy.callCount);    // 0
+console.log(group.spies.length);   // 0
 ```
 
 ## Тесты

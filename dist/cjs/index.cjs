@@ -20,6 +20,8 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.js
 var index_exports = {};
 __export(index_exports, {
+  SpiesGroup: () => SpiesGroup,
+  createSpiesGroup: () => createSpiesGroup,
   createSpy: () => createSpy
 });
 module.exports = __toCommonJS(index_exports);
@@ -169,8 +171,12 @@ function createSpy(target, methodNameOrImpl, customImplForMethod) {
   };
   spy.restore = () => {
     if (isMethodSpy && objToSpyOn) {
-      objToSpyOn[methodName] = originalFn;
+      if (originalFn !== void 0) {
+        objToSpyOn[methodName] = originalFn;
+      }
     }
+    callLog.count = 0;
+    callLog.calls = [];
   };
   if (isMethodSpy && objToSpyOn) {
     objToSpyOn[methodName] = spy;
@@ -178,7 +184,29 @@ function createSpy(target, methodNameOrImpl, customImplForMethod) {
   return spy;
 }
 __name(createSpy, "createSpy");
+
+// src/create-spies-group.js
+function SpiesGroup() {
+  this.spies = [];
+}
+__name(SpiesGroup, "SpiesGroup");
+SpiesGroup.prototype.on = function(target, methodNameOrImpl, customImplForMethod) {
+  const spy = createSpy(target, methodNameOrImpl, customImplForMethod);
+  this.spies.push(spy);
+  return spy;
+};
+SpiesGroup.prototype.restore = function() {
+  this.spies.forEach((spy) => spy.restore());
+  this.spies = [];
+  return this;
+};
+function createSpiesGroup() {
+  return new SpiesGroup();
+}
+__name(createSpiesGroup, "createSpiesGroup");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  SpiesGroup,
+  createSpiesGroup,
   createSpy
 });
