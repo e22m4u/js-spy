@@ -187,10 +187,14 @@ const fetchDataSpy = group.on(service, 'fetchData');
 const processItemSpy = group.on(service, 'processItem');
 const loggerSpy = group.on(standaloneLogger);
 
-// вызов отслеживаемых функций/методов
+// так как методы заменяются шпионами прямо на объекте,
+// допустимо вызывать непосредственно их
 const data = service.fetchData(1);
 service.processItem(data);
-standaloneLogger('All done!');
+
+// но для одиночной функции, мы должны вызывать
+// созданного шпиона loggerSpy, а не оригинал
+loggerSpy('All done!');
 
 console.log(fetchDataSpy.callCount);   // 1
 console.log(processItemSpy.callCount); // 1
@@ -601,10 +605,10 @@ function utilFn() { /* ... */ }
 const processSpy = group.on(service, 'process');
 const utilSpy = group.on(utilFn);
 
-// вызов отслеживаемого метода и функции
-// для изменения истории вызовов
+// вызов отслеживаемого метода
+// и шпиона одиночной функции
 service.process();
-utilFn();
+utilSpy();
 
 // проверка количества вызовов
 console.log(processSpy.callCount); // 1
