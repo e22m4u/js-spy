@@ -2,7 +2,7 @@
   "name": "@e22m4u/js-spy",
   "version": "0.0.2",
   "description": "Утилита слежения за вызовом функций и методов для JavaScript",
-  "author": "e22m4u <e22m4u@yandex.ru>",
+  "author": "Mikhail Evstropov <e22m4u@yandex.ru>",
   "license": "MIT",
   "keywords": [
     "spy",
