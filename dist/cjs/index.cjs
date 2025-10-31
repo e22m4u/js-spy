@@ -94,6 +94,10 @@ function _parseSpyArgs(target, methodNameOrImplFromSpy, customImplForMethodFromS
 }
 __name(_parseSpyArgs, "_parseSpyArgs");
 function createSpy(target, methodNameOrImpl, customImplForMethod) {
+  if (typeof target === "undefined" && typeof methodNameOrImpl === "undefined" && typeof customImplForMethod === "undefined") {
+    target = /* @__PURE__ */ __name(function() {
+    }, "target");
+  }
   const { originalFn, fnToExecute, isMethodSpy, objToSpyOn, methodName } = _parseSpyArgs(target, methodNameOrImpl, customImplForMethod);
   const callLog = {
     count: 0,
@@ -121,6 +125,11 @@ function createSpy(target, methodNameOrImpl, customImplForMethod) {
       throw e;
     }
   }, "spy");
+  Object.defineProperty(spy, "calls", {
+    get: /* @__PURE__ */ __name(() => callLog.calls, "get"),
+    enumerable: true,
+    configurable: false
+  });
   Object.defineProperty(spy, "callCount", {
     get: /* @__PURE__ */ __name(() => callLog.count, "get"),
     enumerable: true,

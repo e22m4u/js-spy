@@ -146,6 +146,15 @@ function _parseSpyArgs(
  * @returns {(function(...[*]): (*|undefined))|*} Шпион-функция.
  */
 export function createSpy(target, methodNameOrImpl, customImplForMethod) {
+  // если аргументы не передавались,
+  // то определяется функция-пустышка
+  if (
+    typeof target === 'undefined' &&
+    typeof methodNameOrImpl === 'undefined' &&
+    typeof customImplForMethod === 'undefined'
+  ) {
+    target = function () {};
+  }
   // получение конфигурации шпиона
   // путем разбора входных аргументов
   const {originalFn, fnToExecute, isMethodSpy, objToSpyOn, methodName} =
@@ -200,6 +209,13 @@ export function createSpy(target, methodNameOrImpl, customImplForMethod) {
       throw e;
     }
   };
+  // определение свойства `calls` на шпионе,
+  // для получения вызовов
+  Object.defineProperty(spy, 'calls', {
+    get: () => callLog.calls,
+    enumerable: true,
+    configurable: false,
+  });
   // определение свойства `callCount` на шпионе
   // для получения количества вызовов
   Object.defineProperty(spy, 'callCount', {

@@ -13,6 +13,7 @@
   - [createSpy(target, [methodNameOrImpl], [customImplForMethod])](#createspytarget-methodnameorimpl-customimplformethod)
   - [Свойства и методы шпиона](#свойства-и-методы-шпиона)
     - [spy(...args)](#spyargs)
+    - [spy.calls](#spycalls)
     - [spy.called](#spycalled)
     - [spy.callCount](#spycallcount)
     - [spy.getCall(n)](#spygetcalln)
@@ -266,13 +267,42 @@ const result = spy(5);      // result будет 10
 console.log(spy.callCount); // 1
 ```
 
+#### spy.calls
+
+- **Тип:** `CallInfo[]` (только для чтения)
+- **Описание:** Возвращает массив вызовов.
+
+```js
+const fn = (a, b) => a + b;
+const spy = createSpy(fn);
+console.log(spy.calls); // []
+
+spy(4, 2);
+spy(5, 3);
+console.log(spy.calls);
+// [
+//   {
+//     args: [4, 2],
+//     thisArg: undefined,
+//     returnValue: 6,
+//     error: undefined,
+//   },
+//   {
+//     args: [5, 3],
+//     thisArg: undefined,
+//     returnValue: 8,
+//     error: undefined,
+//   }
+// ]
+```
+
 #### spy.called
 
 - **Тип:** `boolean` (только для чтения)
 - **Описание:** Указывает, был ли шпион вызван хотя бы один раз.
 
 ```js
-const spy = createSpy(() => {});
+const spy = createSpy();
 console.log(spy.called); // false
 spy();
 console.log(spy.called); // true
@@ -284,7 +314,7 @@ console.log(spy.called); // true
 - **Описание:** Количество раз, которое шпион был вызван.
 
 ```js
-const spy = createSpy(() => {});
+const spy = createSpy();
 console.log(spy.callCount); // 0
 spy();
 spy();
@@ -342,7 +372,7 @@ try {
 Пример:
 
 ```js
-const spy = createSpy(() => {});
+const spy = createSpy();
 spy(1, 'a', true);
 spy(2, 'b');
 
@@ -373,7 +403,7 @@ console.log(spy.calledWith(2, 'c'));       // false
 Пример:
 
 ```js
-const spy = createSpy(() => {});
+const spy = createSpy();
 spy('first call');
 spy('second call', 123);
 

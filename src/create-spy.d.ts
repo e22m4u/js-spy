@@ -60,7 +60,15 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
   (...args: Parameters<TFunc>): ReturnType<TFunc>;
 
   /**
+   * Вызовы шпиона.
+   * 
+   * @readonly
+   */
+  readonly calls: CallInfo[];
+
+  /**
    * Количество вызовов шпиона.
+   * 
    * @readonly
    */
   readonly callCount: number;
@@ -146,6 +154,14 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
    */
   restore(): void;
 }
+
+/**
+ * Создает шпиона.
+ *
+ * @template TFunc Тип функции-заглушки.
+ * @returns        Функция-шпион.
+ */
+export function createSpy<TFunc extends AnyCallable>(): Spy<TFunc>;
 
 /**
  * Создает шпиона для отдельной функции.

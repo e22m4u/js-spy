@@ -3,6 +3,14 @@ import {createSpy} from './create-spy.js';
 
 describe('createSpy', function () {
   describe('argument validation', function () {
+    it('should allow to create spy without arguments', function () {
+      const spy = createSpy();
+      expect(spy).to.be.a('function');
+      const res = spy();
+      expect(res).to.be.undefined;
+      expect(spy.calls).to.have.length(1);
+    });
+
     it('should throw when trying to spy on null', function () {
       // проверка генерации ошибки при попытке
       // шпионить за значением null
@@ -315,6 +323,27 @@ describe('createSpy', function () {
       // создание нового шпиона перед
       // каждым тестом в этом блоке
       spy = createSpy(targetFn);
+    });
+
+    describe('.calls', function () {
+      it('should return an array of CallInfo', function () {
+        expect(spy.calls).to.be.eql([]);
+        spy(1, 2);
+        expect(spy.calls[0]).to.be.eql({
+          args: [1, 2],
+          thisArg: undefined,
+          returnValue: 3,
+          error: undefined,
+        });
+        spy(5, 3);
+        expect(spy.calls[1]).to.be.eql({
+          args: [5, 3],
+          thisArg: undefined,
+          returnValue: 8,
+          error: undefined,
+        });
+        expect(spy.calls).to.have.length(2);
+      });
     });
 
     describe('.callCount and .called', function () {
