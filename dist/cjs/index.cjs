@@ -135,7 +135,7 @@ function createSpy(target, methodNameOrImpl, customImplForMethod) {
     enumerable: true,
     configurable: false
   });
-  Object.defineProperty(spy, "called", {
+  Object.defineProperty(spy, "isCalled", {
     get: /* @__PURE__ */ __name(() => callLog.count > 0, "get"),
     enumerable: true,
     configurable: false

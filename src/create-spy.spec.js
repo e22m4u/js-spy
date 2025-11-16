@@ -89,8 +89,8 @@ describe('createSpy', function () {
     it('should not be called initially', function () {
       // создание шпиона
       const spy = createSpy(function () {});
-      // первоначальное состояние свойства called
-      expect(spy.called).to.be.false;
+      // первоначальное состояние свойства isCalled
+      expect(spy.isCalled).to.be.false;
       // первоначальное значение счетчика вызовов
       expect(spy.callCount).to.equal(0);
     });
@@ -105,9 +105,9 @@ describe('createSpy', function () {
       // второй вызов шпиона
       spy(3, 4);
 
-      // состояние свойства called
+      // состояние свойства isCalled
       // после вызовов
-      expect(spy.called).to.be.true;
+      expect(spy.isCalled).to.be.true;
       // значение счетчика вызовов
       expect(spy.callCount).to.equal(2);
 
@@ -128,7 +128,7 @@ describe('createSpy', function () {
       // проверка возвращенного значения
       expect(result).to.equal('original value');
       // проверка того, что шпион был вызван
-      expect(spy.called).to.be.true;
+      expect(spy.isCalled).to.be.true;
     });
 
     it('should use the custom implementation if provided', function () {
@@ -143,8 +143,8 @@ describe('createSpy', function () {
       // проверка того, что возвращено значение
       // из пользовательской реализации
       expect(result).to.equal('custom');
-      // проверка свойства called
-      expect(spy.called).to.be.true;
+      // проверка свойства isCalled
+      expect(spy.isCalled).to.be.true;
     });
 
     it('should preserve `this` context for the original function', function () {
@@ -190,14 +190,14 @@ describe('createSpy', function () {
       const fnSpy = createSpy(standaloneFn);
       // вызов шпиона, чтобы у него была история
       fnSpy('call standalone');
-      expect(fnSpy.called).to.be.true;
+      expect(fnSpy.isCalled).to.be.true;
       expect(fnSpy.callCount).to.equal(1);
       expect(fnSpy.getCall(0).args).to.deep.equal(['call standalone']);
       // проверка, что вызов restore не вызывает ошибок
       expect(() => fnSpy.restore()).to.not.throw();
       // проверки сброса истории
       expect(fnSpy.callCount).to.equal(0);
-      expect(fnSpy.called).to.be.false;
+      expect(fnSpy.isCalled).to.be.false;
       expect(() => fnSpy.getCall(0)).to.throw(
         RangeError,
         'Invalid call index 0. Spy has 0 call(s).',
@@ -276,7 +276,7 @@ describe('createSpy', function () {
       const spy = createSpy(obj, 'method');
       // вызов шпиона, чтобы у него была история
       obj.method('call before restore');
-      expect(spy.called).to.be.true;
+      expect(spy.isCalled).to.be.true;
       expect(spy.callCount).to.equal(1);
       expect(obj.method).to.equal(spy);
       // вызов метода restore на шпионе
@@ -290,7 +290,7 @@ describe('createSpy', function () {
       expect(result).to.equal('original: TestObj call after restore');
       // проверки сброса истории
       expect(spy.callCount).to.equal(0);
-      expect(spy.called).to.be.false;
+      expect(spy.isCalled).to.be.false;
       expect(() => spy.getCall(0)).to.throw(
         RangeError,
         'Invalid call index 0. Spy has 0 call(s).',
@@ -348,12 +348,12 @@ describe('createSpy', function () {
       });
     });
 
-    describe('.callCount and .called', function () {
-      it('should have callCount = 0 and called = false initially', function () {
+    describe('.callCount and .isCalled', function () {
+      it('should have callCount = 0 and isCalled = false initially', function () {
         // начальное состояние счетчика вызовов
         expect(spy.callCount).to.equal(0);
-        // начальное состояние флага called
-        expect(spy.called).to.be.false;
+        // начальное состояние флага isCalled
+        expect(spy.isCalled).to.be.false;
       });
 
       it('should update after calls', function () {
@@ -361,7 +361,7 @@ describe('createSpy', function () {
         spy(1, 1);
         // состояние после первого вызова
         expect(spy.callCount).to.equal(1);
-        expect(spy.called).to.be.true;
+        expect(spy.isCalled).to.be.true;
         // второй вызов шпиона
         spy(2, 2);
         // состояние после второго вызова

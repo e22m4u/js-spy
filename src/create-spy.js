@@ -224,9 +224,9 @@ export function createSpy(target, methodNameOrImpl, customImplForMethod) {
     enumerable: true,
     configurable: false,
   });
-  // определение свойства `called` на шпионе,
+  // определение свойства `isCalled` на шпионе,
   // указывающего, был ли шпион вызван
-  Object.defineProperty(spy, 'called', {
+  Object.defineProperty(spy, 'isCalled', {
     get: () => callLog.count > 0,
     enumerable: true,
     configurable: false,

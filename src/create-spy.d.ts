@@ -78,7 +78,7 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
    *
    * @readonly
    */
-  readonly called: boolean;
+  readonly isCalled: boolean;
 
   /**
    * Получает детали n-го вызова шпиона.

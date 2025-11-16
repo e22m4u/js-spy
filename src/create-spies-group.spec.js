@@ -118,13 +118,13 @@ describe('SpiesGroup', function () {
         expect(obj2.method()).to.equal('original2');
         // проверка сброса истории
         expect(spyObj1.callCount).to.equal(0);
-        expect(spyObj1.called).to.be.false;
+        expect(spyObj1.isCalled).to.be.false;
         expect(spyFn1.callCount).to.equal(0);
-        expect(spyFn1.called).to.be.false;
+        expect(spyFn1.isCalled).to.be.false;
         expect(spyObj2.callCount).to.equal(0);
-        expect(spyObj2.called).to.be.false;
+        expect(spyObj2.isCalled).to.be.false;
         expect(spyFn2.callCount).to.equal(0);
-        expect(spyFn2.called).to.be.false;
+        expect(spyFn2.isCalled).to.be.false;
       });
 
       it('should clear the internal spies array', function () {
