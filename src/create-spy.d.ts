@@ -161,7 +161,7 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
  * @template TFunc Тип функции-заглушки.
  * @returns        Функция-шпион.
  */
-export function createSpy<TFunc extends AnyCallable>(): Spy<TFunc>;
+export function createSpy(): Spy<(...args: any[]) => void>;
 
 /**
  * Создает шпиона для отдельной функции.
