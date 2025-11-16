@@ -105,7 +105,8 @@ function _parseSpyArgs(
     // и имя метода не предоставлено
     if (methodNameOrImplFromSpy === undefined && typeof target !== 'function') {
       throw new TypeError(
-        `Attempted to spy on a ${typeof target} which is not a function.`,
+        'Attempted to spy on a non-function value. To spy on an object method, ' +
+          'you must provide the method name as the second argument.',
       );
     }
     // генерация общей ошибки для

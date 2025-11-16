@@ -1,5 +1,8 @@
+import {rmSync} from 'node:fs';
 import * as esbuild from 'esbuild';
 import packageJson from './package.json' with {type: 'json'};
+
+rmSync('./dist/cjs', {recursive: true, force: true});
 
 await esbuild.build({
   entryPoints: ['src/index.js'],

@@ -25,11 +25,13 @@ describe('createSpy', function () {
       // без указания имени метода
       expect(() => createSpy({})).to.throw(
         TypeError,
-        'Attempted to spy on a object which is not a function.',
+        'Attempted to spy on a non-function value. To spy on an object method, ' +
+          'you must provide the method name as the second argument.',
       );
       expect(() => createSpy(123)).to.throw(
         TypeError,
-        'Attempted to spy on a number which is not a function.',
+        'Attempted to spy on a non-function value. To spy on an object method, ' +
+          'you must provide the method name as the second argument.',
       );
     });
 

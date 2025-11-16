@@ -75,7 +75,7 @@ function _parseSpyArgs(target, methodNameOrImplFromSpy, customImplForMethodFromS
     }
     if (methodNameOrImplFromSpy === void 0 && typeof target !== "function") {
       throw new TypeError(
-        `Attempted to spy on a ${typeof target} which is not a function.`
+        "Attempted to spy on a non-function value. To spy on an object method, you must provide the method name as the second argument."
       );
     }
     throw new Error(
