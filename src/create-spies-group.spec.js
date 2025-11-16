@@ -1,6 +1,5 @@
 import {expect} from 'chai';
-import {SpiesGroup} from './create-spies-group.js';
-import {createSpiesGroup} from './create-spies-group.js';
+import {SpiesGroup, createSpiesGroup} from './create-spies-group.js';
 
 describe('SpiesGroup', function () {
   describe('createSpiesGroup factory', function () {

@@ -23,6 +23,7 @@ export default [{
     ...eslintMochaPlugin.configs.recommended.rules,
     ...eslintChaiExpectPlugin.configs['recommended-flat'].rules,
     "no-unused-vars": ["error", {caughtErrors: "none"}],
+    'no-duplicate-imports': 'error',
   },
   files: ['src/**/*.js'],
 }];
