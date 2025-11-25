@@ -67,11 +67,11 @@ greetSpy('JavaScript');
 console.log(greetSpy.isCalled);  // true
 console.log(greetSpy.callCount); // 2
 
-// аргументы и возвращаемое значение (первый вызов)
+// аргументы и возвращаемое значение первого вызова
 console.log(greetSpy.calls[0].args[0]);     // "World"
 console.log(greetSpy.calls[0].returnValue); // "Hello, World!"
 
-// аргументы и возвращаемое значение (второй вызов)
+// аргументы и возвращаемое значение второго вызова
 console.log(greetSpy.calls[1].args[0]);     // "JavaScript"
 console.log(greetSpy.calls[1].returnValue); // "Hello, JavaScript!"
 
