@@ -1,7 +1,8 @@
 import {createSpy} from './create-spy.js';
 
 /**
- * Группа позволяет создавать шпионов и управлять ими как одним.
+ * Группа позволяет создавать шпионов
+ * и управлять ими как одним.
  *
  * @constructor
  */
@@ -9,6 +10,14 @@ export function SpiesGroup() {
   this.spies = [];
 }
 
+/**
+ * Создает шпиона для отдельной функции
+ * или метода объекта и добавляет его в группу.
+ *
+ * @param target
+ * @param methodNameOrImpl
+ * @param customImplForMethod
+ */
 SpiesGroup.prototype.on = function (
   target,
   methodNameOrImpl,
@@ -19,6 +28,12 @@ SpiesGroup.prototype.on = function (
   return spy;
 };
 
+/**
+ * Восстановление всех оригинальных методов объектов,
+ * для которых были созданы шпионы в этой группе,
+ * и сброс истории вызовов для всех шпионов в группе.
+ * Очищает внутренний список шпионов.
+ */
 SpiesGroup.prototype.restore = function () {
   this.spies.forEach(spy => spy.restore());
   this.spies = [];

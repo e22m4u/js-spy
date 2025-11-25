@@ -1,7 +1,10 @@
 /**
  * Вспомогательная функция для разбора аргументов createSpy.
  *
- * @private
+ * @param {Function|object} target
+ * @param {Function|string|undefined} methodNameOrImpl
+ * @param {Function|undefined} customImplForMethod
+ * @returns {object}
  */
 function _parseSpyArgs(
   target,
@@ -140,11 +143,10 @@ function _parseSpyArgs(
  * Шпионить за методом объекта:
  * createSpy(targetObject, methodName, [customImplementation])
  *
- * @param target - Функция для шпионажа или объект, на методе которого ставится шпион.
- * @param methodNameOrImpl - Имя метода (строка) если target - объект,
- *                           или кастомная реализация (функция) если target - функция.
- * @param customImplForMethod - Кастомная реализация (функция) если target - объект и указан methodName.
- * @returns {(function(...[*]): (*|undefined))|*} Шпион-функция.
+ * @param {Function|object} target
+ * @param {Function|string|undefined} methodNameOrImpl
+ * @param {Function|undefined} customImplForMethod
+ * @returns {Function}
  */
 export function createSpy(target, methodNameOrImpl, customImplForMethod) {
   // если аргументы не передавались,
@@ -231,89 +233,6 @@ export function createSpy(target, methodNameOrImpl, customImplForMethod) {
     enumerable: true,
     configurable: false,
   });
-  // определение метода `getCall` для получения
-  // информации о конкретном вызове по его индексу
-  spy.getCall = n => {
-    // проверка корректности индекса вызова,
-    // выбрасывание ошибки при выходе за границы
-    if (typeof n !== 'number' || n < 0 || n >= callLog.calls.length) {
-      throw new RangeError(
-        `Invalid call index ${n}. Spy has ${callLog.calls.length} call(s).`,
-      );
-    }
-    return callLog.calls[n];
-  };
-  // определение метода `calledWith` для проверки,
-  // был ли шпион вызван с определенным набором аргументов
-  spy.calledWith = (...expectedArgs) => {
-    return callLog.calls.some(
-      call =>
-        call.args.length === expectedArgs.length &&
-        call.args.every((arg, i) => Object.is(arg, expectedArgs[i])),
-    );
-  };
-  // определение метода `nthCalledWith` для проверки
-  // аргументов n-го вызова шпиона
-  spy.nthCalledWith = (n, ...expectedArgs) => {
-    // getCall(n) выбросит ошибку, если индекс n невалиден
-    const call = spy.getCall(n);
-    return (
-      call.args.length === expectedArgs.length &&
-      call.args.every((arg, i) => Object.is(arg, expectedArgs[i]))
-    );
-  };
-  // определение метода `nthCallReturned` для проверки
-  // значения, возвращенного n-ым вызовом шпиона
-  spy.nthCallReturned = (n, expectedReturnValue) => {
-    // getCall(n) выбросит ошибку, если индекс n невалиден
-    const call = spy.getCall(n);
-    // возврат false, если вызов завершился ошибкой
-    if (call.error) return false;
-    return Object.is(call.returnValue, expectedReturnValue);
-  };
-  // определение метода `nthCallThrew` для проверки,
-  // выбросил ли n-ый вызов шпиона ошибку
-  spy.nthCallThrew = (n, expectedError) => {
-    // getCall(n) выбросит ошибку, если индекс n невалиден
-    const call = spy.getCall(n);
-    // возврат false, если вызов не выбросил ошибку
-    if (call.error === undefined) return false;
-    // если тип ожидаемой ошибки не указан,
-    // любая ошибка считается совпадением
-    if (expectedError === undefined) return true;
-    // проверка строгого равенства
-    // ожидаемой ошибки с выброшенной
-    if (call.error === expectedError) return true;
-    // проверка совпадения ошибки по сообщению,
-    // если ожидаемая ошибка - строка
-    if (typeof expectedError === 'string') {
-      // убедимся, что call.error существует и имеет свойство message
-      return (
-        call.error &&
-        typeof call.error.message === 'string' &&
-        call.error.message === expectedError
-      );
-    }
-    // проверка совпадения ошибки по типу (конструктору),
-    // если ожидаемая ошибка - функция-конструктор
-    if (
-      typeof expectedError === 'function' &&
-      call.error instanceof expectedError
-    ) {
-      return true;
-    }
-    // проверка совпадения ошибки по имени и сообщению,
-    // если ожидаемая ошибка - экземпляр Error
-    if (expectedError instanceof Error && call.error instanceof Error) {
-      return (
-        call.error.name === expectedError.name &&
-        call.error.message === expectedError.message
-      );
-    }
-    // прямое сравнение объектов ошибок
-    // как крайний случай
-    return Object.is(call.error, expectedError);
-  };
   // определение метода `restore` для восстановления
   // оригинального метода объекта и сброса истории вызовов
   spy.restore = () => {

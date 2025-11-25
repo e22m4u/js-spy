@@ -8,7 +8,7 @@
 - [Использование](#использование)
   - [Отслеживание вызова функции](#отслеживание-вызова-функции)
   - [Отслеживание вызова метода](#отслеживание-вызова-метода)
-  - [Управление группой шпионов (SpiesGroup)](#управление-группой-шпионов-spiesgroup)
+  - [Управление группой шпионов](#управление-группой-шпионов)
 - [API](#api)
   - [createSpy(target, [methodNameOrImpl], [customImplForMethod])](#createspytarget-methodnameorimpl-customimplformethod)
   - [Свойства и методы шпиона](#свойства-и-методы-шпиона)
@@ -16,11 +16,6 @@
     - [spy.calls](#spycalls)
     - [spy.isCalled](#spyiscalled)
     - [spy.callCount](#spycallcount)
-    - [spy.getCall(n)](#spygetcalln)
-    - [spy.calledWith(...expectedArgs)](#spycalledwithexpectedargs)
-    - [spy.nthCalledWith(n, ...expectedArgs)](#spynthcalledwithn-expectedargs)
-    - [spy.nthCallReturned(n, expectedReturnValue)](#spynthcallreturnedn-expectedreturnvalue)
-    - [spy.nthCallThrew(n, [expectedError])](#spynthcallthrewn-expectederror)
     - [spy.restore()](#spyrestore)
   - [createSpiesGroup()](#createspiesgroup)
   - [Методы SpiesGroup](#методы-spiesgroup)
@@ -66,35 +61,20 @@ greetSpy('JavaScript');
 console.log(greetSpy.isCalled);  // true
 console.log(greetSpy.callCount); // 2
 
-// аргументы вызова
-console.log(greetSpy.getCall(0).args); // ['World']
-console.log(greetSpy.getCall(1).args); // ['JavaScript']
+console.log(greetSpy.calls[0].args[0]); // "World"
+console.log(greetSpy.calls[0].returnValue); // "Hello, World!"
 
-// возвращаемое значение
-console.log(greetSpy.getCall(0).returnValue); // 'Hello, World!'
-console.log(greetSpy.getCall(1).returnValue); // 'Hello, JavaScript!'
+console.log(greetSpy.calls[1].args[0]); // "JavaScript"
+console.log(greetSpy.calls[1].returnValue); // "Hello, JavaScript!"
 
-// тест аргументов
-console.log(greetSpy.calledWith('World'));      // true
-console.log(greetSpy.calledWith('JavaScript')); // true
-console.log(greetSpy.calledWith('FooBar'));     // false
-
-// тест аргументов определенного вызова
-console.log(greetSpy.nthCalledWith(0, 'World'));      // true
-console.log(greetSpy.nthCalledWith(1, 'JavaScript')); // true
-console.log(greetSpy.nthCalledWith(1, 'FooBar'));     // false
-
-// тест возвращаемого значения
-console.log(greetSpy.nthCallReturned(0, 'Hello, World'));      // true
-console.log(greetSpy.nthCallReturned(1, 'Hello, JavaScript')); // true
-
-try {
-  greetSpy.getCall(5); // Попытка получить несуществующий вызов
-} catch (e) {
-  // Ожидаемая ошибка, например:
-  // "Invalid call index 5. Spy has 2 call(s)."
-  console.error(e.message);
-}
+console.log(greetSpy.calls.length); // 2
+console.log(greetSpy.calls[0]);
+// {
+//   args: ['World'],
+//   thisArg: undefined,
+//   returnValue: 'Hello, World!',
+//   error: undefined
+// }
 ```
 
 ### Отслеживание вызова метода:
@@ -121,38 +101,29 @@ console.log(calculator.value); // 3
 console.log(addSpy.isCalled);  // true
 console.log(addSpy.callCount); // 2
 
-// аргументы вызова
-console.log(addSpy.getCall(0).args); // [5, 3]
-console.log(addSpy.getCall(1).args); // [2, 1]
+console.log(addSpy.calls[0].args[0]); // 5
+console.log(addSpy.calls[0].args[1]); // 3
+console.log(addSpy.calls[0].returnValue); // 8
 
-// возвращаемое значение
-console.log(addSpy.getCall(0).returnValue); // 8
-console.log(addSpy.getCall(1).returnValue); // 3
+console.log(addSpy.calls[1].args[0]); // 2
+console.log(addSpy.calls[1].args[1]); // 1
+console.log(addSpy.calls[1].returnValue); // 3
 
-// контекст вызова
-console.log(addSpy.getCall(0).thisArg === calculator); // true
-console.log(addSpy.getCall(1).thisArg === calculator); // true
-
-// тест аргументов
-console.log(addSpy.calledWith(5, 3));  // true
-console.log(addSpy.calledWith(2, 1));  // true
-console.log(addSpy.calledWith('foo')); // false
-
-// тест аргументов определенного вызова
-console.log(addSpy.nthCalledWith(0, 5, 3));  // true
-console.log(addSpy.nthCalledWith(1, 2, 1));  // true
-console.log(addSpy.nthCalledWith(1, 'foo')); // false
-
-// тест возвращаемого значения
-console.log(addSpy.nthCallReturned(0, 8)); // true
-console.log(addSpy.nthCallReturned(1, 3)); // true
+console.log(addSpy.calls.length); // 2
+console.log(addSpy.calls[0]);
+// {
+//   args: [5, 3],
+//   thisArg: calculator, // ссылка на объект calculator
+//   returnValue: 8,
+//   error: undefined
+// }
 
 // восстановление оригинального метода
 addSpy.restore();
 // calculator.add теперь снова оригинальный метод
 ```
 
-### Управление группой шпионов (SpiesGroup)
+### Управление группой шпионов
 
 Иногда бывает удобно управлять несколькими шпионами одновременно,
 например, восстановить их все разом. Для этого используется `SpiesGroup`.
@@ -193,7 +164,7 @@ const loggerSpy = group.on(standaloneLogger);
 const data = service.fetchData(1);
 service.processItem(data);
 
-// но для одиночной функции, мы должны вызывать
+// но для одиночной функции, требуется вызывать
 // созданного шпиона loggerSpy, а не оригинал
 loggerSpy('All done!');
 
@@ -204,7 +175,7 @@ console.log(loggerSpy.callCount);      // 1
 // восстановление всех шпионов в группе:
 //   - оригинальные методы service.fetchData
 //     и service.processItem будут восстановлены
-//   - история вызовов (callCount, isCalled, getCall и т.д.)
+//   - история вызовов (callCount, isCalled, calls и т.д.)
 //     для fetchDataSpy, processItemSpy и loggerSpy
 //     будет сброшена
 //   - внутренний список шпионов в группе будет очищен
@@ -321,204 +292,6 @@ spy();
 console.log(spy.callCount); // 2
 ```
 
-#### spy.getCall(n)
-
-Аргументы:
-- `n`: Число, индекс вызова (начиная с 0).
-
-Возвращает: Объект `CallInfo` со свойствами:
-
-- `args`: Массив аргументов, с которыми был совершен вызов.
-- `thisArg`: Контекст `this` вызова.
-- `returnValue`: Значение, возвращенное функцией (или `undefined`,
-  если функция бросила ошибку).
-- `error`: Ошибка, выброшенная функцией (или `undefined`, если ошибки
-  не было).
-
-Выбрасывает:
-
-- `RangeError`: Если `n` не является допустимым индексом вызова.
-
-Пример:
-
-```js
-const spy = createSpy((a, b) => a + b);
-spy.call({ id: 1 }, 10, 20); // 0-й вызов
-
-const firstCall = spy.getCall(0);
-console.log(firstCall.args); // [10, 20]
-
-try {
-  spy.getCall(1); // Попытка получить несуществующий вызов
-} catch (e) {
-  // Ожидаемая ошибка, например:
-  // "Invalid call index 1. Spy has 1 call(s)."
-  console.error(e.message);
-}
-```
-
-#### spy.calledWith(...expectedArgs)
-
-Аргументы:
-
-- `...expectedArgs`: Аргументы, с которыми, как ожидается, был вызван
-    шпион.
-
-Возвращает: `boolean`
-- `true`, если шпион был хотя бы раз вызван с точно таким же набором
-  аргументов (сравнение с использованием `Object.is`).
-- `false` в противном случае.
-
-Пример:
-
-```js
-const spy = createSpy();
-spy(1, 'a', true);
-spy(2, 'b');
-
-console.log(spy.calledWith(1, 'a', true)); // true
-console.log(spy.calledWith(1, 'a'));       // false
-console.log(spy.calledWith(2, 'c'));       // false
-```
-
-#### spy.nthCalledWith(n, ...expectedArgs)
-
-Аргументы:
-
-- `n`: Число, индекс вызова (начиная с 0).
-- `...expectedArgs`: Аргументы, с которыми, как ожидается, был
-  совершен n-ый вызов.
-
-Возвращает: `boolean`
-
-- `true`, если n-ый вызов шпиона был совершен с точно таким же набором
-  аргументов.
-- `false` в противном случае.
-
-Выбрасывает:
-
-- `RangeError`: Если `n` не является допустимым индексом вызова
-  (унаследовано от `getCall`).
-
-Пример:
-
-```js
-const spy = createSpy();
-spy('first call');
-spy('second call', 123);
-
-console.log(spy.nthCalledWith(0, 'first call'));       // true
-console.log(spy.nthCalledWith(1, 'second call', 123)); // true
-console.log(spy.nthCalledWith(0, 'another'));          // false
-
-try {
-  spy.nthCalledWith(2, 'anything'); // Несуществующий вызов
-} catch (e) {
-  // Ожидаемая ошибка, например:
-  // "Invalid call index 2. Spy has 2 call(s)."
-  console.error(e.message);
-}
-```
-
-#### spy.nthCallReturned(n, expectedReturnValue)
-
-Аргументы:
-
-- `n`: Число, индекс вызова (начиная с 0).
-- `expectedReturnValue`: Ожидаемое возвращаемое значение для n-го
-  вызова.
-
-Возвращает: `boolean`
-- `true`, если n-ый вызов шпиона вернул `expectedReturnValue` (сравнение
-  с помощью `Object.is`).
-- `false`, если значение не совпало или вызов выбросил ошибку.
-
-Выбрасывает:
-
-- `RangeError`: Если `n` не является допустимым индексом вызова
-  (унаследовано от `getCall`).
-
-Пример:
-
-```js
-const spy = createSpy(val => {
-  if (val === 0) throw new Error('zero');
-  return val * 10;
-});
-spy(5); // 0-й вызов, возвращает 50
-try { spy(0); } catch(e) {} // 1-й вызов, бросает ошибку
-spy(2); // 2-й вызов, возвращает 20
-
-console.log(spy.nthCallReturned(0, 50)); // true
-console.log(spy.nthCallReturned(1, 10)); // false (вызов 1 бросил ошибку)
-console.log(spy.nthCallReturned(2, 20)); // true
-
-try {
-  spy.nthCallReturned(3, 30); // Несуществующий вызов
-} catch (e) {
-  // Ожидаемая ошибка, например:
-  // "Invalid call index 3. Spy has 3 call(s)."
-  console.error(e.message);
-}
-```
-
-#### spy.nthCallThrew(n, [expectedError])
-
-Аргументы:
-
-- `n`: Число, индекс вызова (начиная с 0).
-- `expectedError` (необязательно): Матчер для ошибки. Возможные
-  варианты:
-  - `undefined`: Проверяет, что n-ый вызов просто выбросил любую
-    ошибку.
-  - Строка: Проверяет, что сообщение выброшенной ошибки
-    (`error.message`) совпадает со строкой.
-  - Конструктор ошибки (например, `Error`, `TypeError`): Проверяет,
-    что выброшенная ошибка является экземпляром (`instanceof`) этого
-    конструктора.
-  - Экземпляр ошибки: Проверяет, что имя (`error.name`) и сообщение
-    (`error.message`) выброшенной ошибки совпадают с полями
-    `expectedError`.
-  - Любое другое значение: Проверяется прямое совпадение выброшенной
-    ошибки с `expectedError` через `Object.is`.
-
-Возвращает: `boolean`
-
-- `true`, если n-ый вызов шпиона выбросил ошибку
-  или ошибка соответствует `expectedError`.
-- `false`, если вызов не выбросил ошибку (или выбросил не ту ошибку).
-
-Выбрасывает:
-- `RangeError`: Если `n` не является допустимым индексом вызова
-  (унаследовано от `getCall`).
-
-Пример:
-
-```js
-const mightThrow = (val) => {
-  if (val === 0) throw new TypeError('Zero is not allowed');
-  if (val < 0) throw new Error('Negative value');
-  return val;
-};
-const spy = createSpy(mightThrow);
-
-try { spy(0); } catch (e) {}  // 0-й вызов
-try { spy(-5); } catch (e) {} // 1-й вызов
-spy(10);                      // 2-й вызов
-
-console.log(spy.nthCallThrew(0));                        // true
-console.log(spy.nthCallThrew(0, 'Zero is not allowed')); // true
-console.log(spy.nthCallThrew(2));                        // false (2-й вызов не бросил ошибку)
-
-try {
-  spy.nthCallThrew(3); // Несуществующий вызов
-} catch (e) {
-  // Ожидаемая ошибка, например:
-  // "Invalid call index 3. Spy has 3 call(s)."
-  console.error(e.message);
-}
-```
-
 #### spy.restore()
 
 Описание:
@@ -570,6 +343,7 @@ console.log(fnSpy.callCount); // 0 (история сброшена)
 
 ```js
 import {createSpiesGroup} from '@e22m4u/js-spy';
+
 const group = createSpiesGroup();
 ```
 

@@ -34,7 +34,7 @@ describe('SpiesGroup', function () {
         const fnSpyWithImpl = group.on(targetFn, customImpl);
         // вызов для проверки кастомной реализации
         fnSpyWithImpl();
-        expect(fnSpyWithImpl.getCall(0).returnValue).to.equal(customImpl());
+        expect(fnSpyWithImpl.calls[0].returnValue).to.equal(customImpl());
         // шпион для метода объекта
         const obj = {method: () => 'original method'};
         const methodSpy = group.on(obj, 'method');

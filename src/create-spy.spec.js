@@ -112,9 +112,9 @@ describe('createSpy', function () {
       expect(spy.callCount).to.equal(2);
 
       // проверка аргументов первого вызова
-      expect(spy.getCall(0).args).to.deep.equal([1, 2]);
+      expect(spy.calls[0].args).to.deep.equal([1, 2]);
       // проверка аргументов второго вызова
-      expect(spy.getCall(1).args).to.deep.equal([3, 4]);
+      expect(spy.calls[1].args).to.deep.equal([3, 4]);
     });
 
     it('should call the original function and return its value by default', function () {
@@ -163,7 +163,7 @@ describe('createSpy', function () {
       expect(result).to.equal(10);
       // проверка сохраненного контекста
       // в информации о вызове
-      expect(spy.getCall(0).thisArg).to.equal(contextObj);
+      expect(spy.calls[0].thisArg).to.equal(contextObj);
     });
 
     it('should preserve `this` context for the custom implementation', function () {
@@ -182,7 +182,7 @@ describe('createSpy', function () {
       // пользовательской реализации
       expect(result).to.equal(20);
       // проверка сохраненного контекста
-      expect(spy.getCall(0).thisArg).to.equal(contextObj);
+      expect(spy.calls[0].thisArg).to.equal(contextObj);
     });
 
     it('restore() on a function spy should reset its history and not throw', function () {
@@ -192,16 +192,12 @@ describe('createSpy', function () {
       fnSpy('call standalone');
       expect(fnSpy.isCalled).to.be.true;
       expect(fnSpy.callCount).to.equal(1);
-      expect(fnSpy.getCall(0).args).to.deep.equal(['call standalone']);
+      expect(fnSpy.calls[0].args).to.deep.equal(['call standalone']);
       // проверка, что вызов restore не вызывает ошибок
       expect(() => fnSpy.restore()).to.not.throw();
       // проверки сброса истории
       expect(fnSpy.callCount).to.equal(0);
       expect(fnSpy.isCalled).to.be.false;
-      expect(() => fnSpy.getCall(0)).to.throw(
-        RangeError,
-        'Invalid call index 0. Spy has 0 call(s).',
-      );
     });
   });
 
@@ -247,9 +243,9 @@ describe('createSpy', function () {
       // проверка счетчика вызовов
       expect(spy.callCount).to.equal(1);
       // проверка сохраненного контекста
-      expect(spy.getCall(0).thisArg).to.equal(obj);
+      expect(spy.calls[0].thisArg).to.equal(obj);
       // проверка сохраненных аргументов
-      expect(spy.getCall(0).args).to.deep.equal(['arg1']);
+      expect(spy.calls[0].args).to.deep.equal(['arg1']);
     });
 
     it('should use custom implementation with object context if provided', function () {
@@ -268,7 +264,7 @@ describe('createSpy', function () {
       // проверка счетчика вызовов
       expect(spy.callCount).to.equal(1);
       // проверка сохраненного контекста
-      expect(spy.getCall(0).thisArg).to.equal(obj);
+      expect(spy.calls[0].thisArg).to.equal(obj);
     });
 
     it('restore() should put the original method back and reset spy history', function () {
@@ -291,10 +287,6 @@ describe('createSpy', function () {
       // проверки сброса истории
       expect(spy.callCount).to.equal(0);
       expect(spy.isCalled).to.be.false;
-      expect(() => spy.getCall(0)).to.throw(
-        RangeError,
-        'Invalid call index 0. Spy has 0 call(s).',
-      );
     });
 
     // Этот тест стал частью теста для standalone функции, но если хочешь оставить его здесь для ясности
@@ -366,276 +358,6 @@ describe('createSpy', function () {
         spy(2, 2);
         // состояние после второго вызова
         expect(spy.callCount).to.equal(2);
-      });
-    });
-
-    describe('.getCall(n)', function () {
-      it('should throw RangeError for out-of-bounds index', function () {
-        // проверка для отрицательного индекса
-        expect(() => spy.getCall(-1)).to.throw(
-          RangeError,
-          /Invalid call index -1/,
-        );
-        // проверка для индекса, равного количеству вызовов (когда вызовов нет)
-        expect(() => spy.getCall(0)).to.throw(
-          RangeError,
-          /Invalid call index 0. Spy has 0 call\(s\)\./,
-        );
-        spy(1, 1);
-        // проверка для индекса, равного количеству вызовов (когда есть один вызов)
-        expect(() => spy.getCall(1)).to.throw(
-          RangeError,
-          /Invalid call index 1. Spy has 1 call\(s\)\./,
-        );
-        // проверка для индекса, большего количества вызовов
-        expect(() => spy.getCall(10)).to.throw(
-          RangeError,
-          /Invalid call index 10. Spy has 1 call\(s\)\./,
-        );
-      });
-
-      it('should throw RangeError if index is not a number', function () {
-        // проверка для нечислового индекса
-        expect(() => spy.getCall('a')).to.throw(
-          RangeError,
-          /Invalid call index a/,
-        );
-        expect(() => spy.getCall(null)).to.throw(
-          RangeError,
-          /Invalid call index null/,
-        );
-        expect(() => spy.getCall(undefined)).to.throw(
-          RangeError,
-          /Invalid call index undefined/,
-        );
-      });
-
-      it('should return call details for a valid index', function () {
-        // вызов шпиона с определенными аргументами
-        // и контекстом
-        const context = {id: 1};
-        spy.call(context, 10, 20);
-        // получение информации о первом вызове (индекс 0)
-        const callInfo = spy.getCall(0);
-        // проверка наличия информации о вызове
-        expect(callInfo).to.exist;
-        // проверка аргументов вызова
-        expect(callInfo.args).to.deep.equal([10, 20]);
-        // проверка контекста вызова
-        expect(callInfo.thisArg).to.equal(context);
-        // проверка возвращенного значения
-        expect(callInfo.returnValue).to.equal(30);
-        // проверка отсутствия ошибки
-        expect(callInfo.error).to.be.undefined;
-      });
-
-      it('should record error if thrown', function () {
-        // попытка вызова, который приведет к ошибке
-        try {
-          spy(0, 1);
-        } catch (e) {
-          // ошибка ожидаема
-        }
-        // получение информации о вызове,
-        // завершившемся ошибкой
-        const callInfo = spy.getCall(0);
-        // проверка наличия ошибки в информации о вызове
-        expect(callInfo.error).to.be.instanceOf(Error);
-        // проверка сообщения ошибки
-        expect(callInfo.error.message).to.equal('zero error');
-        // проверка отсутствия возвращенного значения
-        expect(callInfo.returnValue).to.be.undefined;
-      });
-    });
-
-    describe('.calledWith(...args)', function () {
-      it('should return true if called with matching arguments (Object.is comparison)', function () {
-        // вызов шпиона с разными наборами аргументов
-        spy(1, 2);
-        spy('a', 'b');
-        const objArg = {};
-        spy(objArg, null, undefined);
-        // проверка совпадения аргументов
-        expect(spy.calledWith(1, 2)).to.be.true;
-        expect(spy.calledWith('a', 'b')).to.be.true;
-        expect(spy.calledWith(objArg, null, undefined)).to.be.true;
-      });
-
-      it('should return false if not called with matching arguments', function () {
-        // вызов шпиона
-        spy(1, 2);
-        // проверка с несовпадающими аргументами
-        expect(spy.calledWith(1, 3)).to.be.false;
-        expect(spy.calledWith(1)).to.be.false;
-        expect(spy.calledWith()).to.be.false;
-        expect(spy.calledWith(1, 2, 3)).to.be.false;
-      });
-
-      it('should return false if never called', function () {
-        // проверка для шпиона,
-        // который не был вызван
-        expect(spy.calledWith(1, 2)).to.be.false;
-      });
-    });
-
-    describe('.nthCalledWith(n, ...args)', function () {
-      it('should return true if nth call had matching arguments', function () {
-        // серия вызовов шпиона
-        spy(1, 2); // 0-й вызов
-        spy('x', 'y'); // 1-й вызов
-        // проверка аргументов конкретных вызовов
-        expect(spy.nthCalledWith(0, 1, 2)).to.be.true;
-        expect(spy.nthCalledWith(1, 'x', 'y')).to.be.true;
-      });
-
-      it('should return false if nth call had different arguments', function () {
-        // вызов шпиона
-        spy(1, 2);
-        // проверки для несовпадающих аргументов
-        expect(spy.nthCalledWith(0, 1, 3)).to.be.false;
-        expect(spy.nthCalledWith(0)).to.be.false;
-      });
-
-      it('should throw RangeError if call index is out of bounds', function () {
-        spy(1, 2);
-        // проверка для несуществующего вызова
-        expect(() => spy.nthCalledWith(1, 1, 2)).to.throw(
-          RangeError,
-          /Invalid call index 1/,
-        );
-        expect(() => spy.nthCalledWith(-1, 1, 2)).to.throw(
-          RangeError,
-          /Invalid call index -1/,
-        );
-      });
-    });
-
-    describe('.nthCallReturned(n, returnValue)', function () {
-      it('should return true if nth call returned the expected value (Object.is comparison)', function () {
-        // серия вызовов
-        spy(1, 2); // возвращает 3
-        spy(5, 5); // возвращает 10
-        const objRet = {};
-        const fnWithObjRet = () => objRet;
-        const spy2 = createSpy(fnWithObjRet);
-        spy2();
-
-        // проверка возвращаемых значений
-        expect(spy.nthCallReturned(0, 3)).to.be.true;
-        expect(spy.nthCallReturned(1, 10)).to.be.true;
-        expect(spy2.nthCallReturned(0, objRet)).to.be.true;
-      });
-
-      it('should return false if nth call returned different value or threw', function () {
-        // вызов, который вернет значение
-        spy(1, 2); // возвращает 3 (0-й вызов)
-        // вызов, который вызовет ошибку
-        try {
-          spy(0, 1); // 1-й вызов
-        } catch (e) {
-          // бросает ошибку
-        }
-        // проверки для различных сценариев
-        expect(spy.nthCallReturned(0, 4)).to.be.false;
-        expect(spy.nthCallReturned(1, undefined)).to.be.false;
-      });
-
-      it('should throw RangeError if call index is out of bounds', function () {
-        spy(1, 2);
-        // проверка для несуществующего вызова
-        expect(() => spy.nthCallReturned(1, 3)).to.throw(
-          RangeError,
-          /Invalid call index 1/,
-        );
-      });
-    });
-
-    describe('.nthCallThrew(n, errorMatcher)', function () {
-      it('should return true if nth call threw any error (no matcher)', function () {
-        // вызов, приводящий к ошибке
-        try {
-          spy(0, 1);
-        } catch (e) {
-          // бросает ошибку
-        }
-        // проверка факта ошибки
-        expect(spy.nthCallThrew(0)).to.be.true;
-      });
-
-      it('should return false if nth call did not throw', function () {
-        // успешный вызов
-        spy(1, 2);
-        // проверки
-        expect(spy.nthCallThrew(0)).to.be.false;
-      });
-
-      it('should throw RangeError if call index is out of bounds', function () {
-        spy(1, 2);
-        // проверка для несуществующего вызова
-        expect(() => spy.nthCallThrew(1)).to.throw(
-          RangeError,
-          /Invalid call index 1/,
-        );
-      });
-
-      it('should match error by message (string)', function () {
-        // вызов, приводящий к ошибке
-        try {
-          spy(0, 1);
-        } catch (e) {
-          // бросает ошибку
-        }
-        // проверка по сообщению ошибки
-        expect(spy.nthCallThrew(0, 'zero error')).to.be.true;
-        expect(spy.nthCallThrew(0, 'other error')).to.be.false;
-      });
-
-      it('should match error by type (constructor)', function () {
-        // вызов, приводящий к ошибке
-        try {
-          spy(0, 1);
-        } catch (e) {
-          // бросает ошибку
-        }
-        // проверка по типу ошибки
-        expect(spy.nthCallThrew(0, Error)).to.be.true;
-        expect(spy.nthCallThrew(0, TypeError)).to.be.false;
-      });
-
-      it('should match error by instance (name and message)', function () {
-        // вызов, приводящий к ошибке
-        try {
-          spy(0, 1);
-        } catch (e) {
-          // бросает ошибку
-        }
-        // создание экземпляра ошибки для сравнения
-        const expectedError = new Error('zero error');
-        const wrongError = new Error('another error');
-        const differentType = new TypeError('zero error');
-        // проверки
-        expect(spy.nthCallThrew(0, expectedError)).to.be.true;
-        expect(spy.nthCallThrew(0, wrongError)).to.be.false;
-        expect(spy.nthCallThrew(0, differentType)).to.be.false;
-      });
-
-      it('should match error by Object.is for direct error object comparison', function () {
-        // создание специфической ошибки
-        const specificError = new RangeError('specific');
-        const fnThrowsSpecific = () => {
-          throw specificError;
-        };
-        const specificSpy = createSpy(fnThrowsSpecific);
-        try {
-          specificSpy();
-        } catch (e) {
-          // бросает ошибку
-        }
-        // проверка по прямому совпадению объекта ошибки
-        expect(specificSpy.nthCallThrew(0, specificError)).to.be.true;
-        // новый экземпляр не тот же объект, но совпадет по name и message
-        expect(specificSpy.nthCallThrew(0, new RangeError('specific'))).to.be
-          .true;
       });
     });
   });

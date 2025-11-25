@@ -140,44 +140,6 @@ function createSpy(target, methodNameOrImpl, customImplForMethod) {
     enumerable: true,
     configurable: false
   });
-  spy.getCall = (n) => {
-    if (typeof n !== "number" || n < 0 || n >= callLog.calls.length) {
-      throw new RangeError(
-        `Invalid call index ${n}. Spy has ${callLog.calls.length} call(s).`
-      );
-    }
-    return callLog.calls[n];
-  };
-  spy.calledWith = (...expectedArgs) => {
-    return callLog.calls.some(
-      (call) => call.args.length === expectedArgs.length && call.args.every((arg, i) => Object.is(arg, expectedArgs[i]))
-    );
-  };
-  spy.nthCalledWith = (n, ...expectedArgs) => {
-    const call = spy.getCall(n);
-    return call.args.length === expectedArgs.length && call.args.every((arg, i) => Object.is(arg, expectedArgs[i]));
-  };
-  spy.nthCallReturned = (n, expectedReturnValue) => {
-    const call = spy.getCall(n);
-    if (call.error) return false;
-    return Object.is(call.returnValue, expectedReturnValue);
-  };
-  spy.nthCallThrew = (n, expectedError) => {
-    const call = spy.getCall(n);
-    if (call.error === void 0) return false;
-    if (expectedError === void 0) return true;
-    if (call.error === expectedError) return true;
-    if (typeof expectedError === "string") {
-      return call.error && typeof call.error.message === "string" && call.error.message === expectedError;
-    }
-    if (typeof expectedError === "function" && call.error instanceof expectedError) {
-      return true;
-    }
-    if (expectedError instanceof Error && call.error instanceof Error) {
-      return call.error.name === expectedError.name && call.error.message === expectedError.message;
-    }
-    return Object.is(call.error, expectedError);
-  };
   spy.restore = () => {
     if (isMethodSpy && objToSpyOn) {
       if (originalFn !== void 0) {
