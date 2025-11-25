@@ -115,12 +115,12 @@ console.log(calculator.value); // 3
 console.log(addSpy.isCalled);  // true
 console.log(addSpy.callCount); // 2
 
-// аргументы и возвращаемое значение (первый вызов)
+// аргументы и возвращаемое значение первого вызова
 console.log(addSpy.calls[0].args[0]);     // 5
 console.log(addSpy.calls[0].args[1]);     // 3
 console.log(addSpy.calls[0].returnValue); // 8
 
-// аргументы и возвращаемое значение (второй вызов)
+// аргументы и возвращаемое значение второго вызова
 console.log(addSpy.calls[1].args[0]);     // 2
 console.log(addSpy.calls[1].args[1]);     // 1
 console.log(addSpy.calls[1].returnValue); // 3
