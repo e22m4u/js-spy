@@ -70,8 +70,7 @@ console.log(greetSpy.callCount); // 2
 // аргументы и возвращаемое значение первого вызова
 console.log(greetSpy.calls[0].args);        // ["World"]
 console.log(greetSpy.calls[0].returnValue); // "Hello, World!"
-
-// аргументы и возвращаемое значение второго вызова
+// и второго вызова
 console.log(greetSpy.calls[1].args);        // ["JavaScript"]
 console.log(greetSpy.calls[1].returnValue); // "Hello, JavaScript!"
 
@@ -118,8 +117,7 @@ console.log(addSpy.callCount); // 2
 // аргументы и возвращаемое значение первого вызова
 console.log(addSpy.calls[0].args);        // [5, 3]
 console.log(addSpy.calls[0].returnValue); // 8
-
-// аргументы и возвращаемое значение второго вызова
+// и второго вызова
 console.log(addSpy.calls[1].args);        // [2, 1]
 console.log(addSpy.calls[1].returnValue); // 3
 
