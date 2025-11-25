@@ -5,7 +5,7 @@ import {MethodKey, AnyCallable} from './types.js';
  * Представляет группу шпионов, позволяющую
  * управлять ими коллективно.
  */
-export interface SpiesGroup {
+export declare class SpiesGroup {
   /**
    * Внутренний массив, хранящий все шпионы,
    * созданные в этой группе. Не предназначен

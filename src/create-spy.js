@@ -18,6 +18,7 @@ function _parseSpyArgs(
   let isMethodSpy = false;
   let objToSpyOn;
   let methodName;
+  let hasOwnMethod = false;
   // определение вероятности того, что
   // создается шпион для отдельной функции
   const isLikelyFunctionSpy =
@@ -56,6 +57,7 @@ function _parseSpyArgs(
     methodName = methodNameOrImplFromSpy;
     objToSpyOn = target;
     isMethodSpy = true;
+    hasOwnMethod = Object.prototype.hasOwnProperty.call(objToSpyOn, methodName);
     // генерация ошибки, если метод
     // с указанным именем отсутствует на объекте
     if (!(methodName in target)) {
@@ -130,6 +132,7 @@ function _parseSpyArgs(
     isMethodSpy,
     objToSpyOn,
     methodName,
+    hasOwnMethod,
   };
 }
 
@@ -160,8 +163,14 @@ export function createSpy(target, methodNameOrImpl, customImplForMethod) {
   }
   // получение конфигурации шпиона
   // путем разбора входных аргументов
-  const {originalFn, fnToExecute, isMethodSpy, objToSpyOn, methodName} =
-    _parseSpyArgs(target, methodNameOrImpl, customImplForMethod);
+  const {
+    originalFn,
+    fnToExecute,
+    isMethodSpy,
+    objToSpyOn,
+    methodName,
+    hasOwnMethod,
+  } = _parseSpyArgs(target, methodNameOrImpl, customImplForMethod);
   // инициализация объекта для хранения
   // информации о вызовах шпиона
   const callLog = {
@@ -242,7 +251,17 @@ export function createSpy(target, methodNameOrImpl, customImplForMethod) {
       // проверка, что originalFn существует (на всякий случай,
       // хотя по логике _parseSpyArgs он должен быть)
       if (originalFn !== undefined) {
-        objToSpyOn[methodName] = originalFn;
+        // если метод принадлежит объекту,
+        // то устанавливается предыдущее значение
+        if (hasOwnMethod) {
+          objToSpyOn[methodName] = originalFn;
+        }
+        // если оригинальный метод принадлежит прототипу,
+        // то шпион удаляется из свойства, открывая метод
+        // прототипа
+        else {
+          delete objToSpyOn[methodName];
+        }
       }
     }
     // сброс истории вызовов

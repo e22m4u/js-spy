@@ -33,6 +33,7 @@ function _parseSpyArgs(target, methodNameOrImplFromSpy, customImplForMethodFromS
   let isMethodSpy = false;
   let objToSpyOn;
   let methodName;
+  let hasOwnMethod = false;
   const isLikelyFunctionSpy = typeof target === "function" && customImplForMethodFromSpy === void 0;
   const isLikelyMethodSpy = typeof target === "object" && target !== null && typeof methodNameOrImplFromSpy === "string";
   if (isLikelyFunctionSpy) {
@@ -49,6 +50,7 @@ function _parseSpyArgs(target, methodNameOrImplFromSpy, customImplForMethodFromS
     methodName = methodNameOrImplFromSpy;
     objToSpyOn = target;
     isMethodSpy = true;
+    hasOwnMethod = Object.prototype.hasOwnProperty.call(objToSpyOn, methodName);
     if (!(methodName in target)) {
       throw new TypeError(
         `Attempted to spy on a non-existent property: "${methodName}"`
@@ -89,7 +91,8 @@ function _parseSpyArgs(target, methodNameOrImplFromSpy, customImplForMethodFromS
     fnToExecute: customImplementation || originalFn,
     isMethodSpy,
     objToSpyOn,
-    methodName
+    methodName,
+    hasOwnMethod
   };
 }
 __name(_parseSpyArgs, "_parseSpyArgs");
@@ -98,7 +101,14 @@ function createSpy(target, methodNameOrImpl, customImplForMethod) {
     target = /* @__PURE__ */ __name(function() {
     }, "target");
   }
-  const { originalFn, fnToExecute, isMethodSpy, objToSpyOn, methodName } = _parseSpyArgs(target, methodNameOrImpl, customImplForMethod);
+  const {
+    originalFn,
+    fnToExecute,
+    isMethodSpy,
+    objToSpyOn,
+    methodName,
+    hasOwnMethod
+  } = _parseSpyArgs(target, methodNameOrImpl, customImplForMethod);
   const callLog = {
     count: 0,
     calls: []
@@ -143,7 +153,11 @@ function createSpy(target, methodNameOrImpl, customImplForMethod) {
   spy.restore = () => {
     if (isMethodSpy && objToSpyOn) {
       if (originalFn !== void 0) {
-        objToSpyOn[methodName] = originalFn;
+        if (hasOwnMethod) {
+          objToSpyOn[methodName] = originalFn;
+        } else {
+          delete objToSpyOn[methodName];
+        }
       }
     }
     callLog.count = 0;
@@ -157,19 +171,40 @@ function createSpy(target, methodNameOrImpl, customImplForMethod) {
 __name(createSpy, "createSpy");
 
 // src/create-spies-group.js
-function SpiesGroup() {
-  this.spies = [];
-}
-__name(SpiesGroup, "SpiesGroup");
-SpiesGroup.prototype.on = function(target, methodNameOrImpl, customImplForMethod) {
-  const spy = createSpy(target, methodNameOrImpl, customImplForMethod);
-  this.spies.push(spy);
-  return spy;
-};
-SpiesGroup.prototype.restore = function() {
-  this.spies.forEach((spy) => spy.restore());
-  this.spies = [];
-  return this;
+var SpiesGroup = class {
+  static {
+    __name(this, "SpiesGroup");
+  }
+  /**
+   * Constructor.
+   */
+  constructor() {
+    this.spies = [];
+  }
+  /**
+   * Создает шпиона для отдельной функции
+   * или метода объекта и добавляет его в группу.
+   *
+   * @param target
+   * @param methodNameOrImpl
+   * @param customImplForMethod
+   */
+  on(target, methodNameOrImpl, customImplForMethod) {
+    const spy = createSpy(target, methodNameOrImpl, customImplForMethod);
+    this.spies.push(spy);
+    return spy;
+  }
+  /**
+   * Восстановление всех оригинальных методов объектов,
+   * для которых были созданы шпионы в этой группе,
+   * и сброс истории вызовов для всех шпионов в группе.
+   * Очищает внутренний список шпионов.
+   */
+  restore() {
+    this.spies.forEach((spy) => spy.restore());
+    this.spies = [];
+    return this;
+  }
 };
 function createSpiesGroup() {
   return new SpiesGroup();

@@ -92,7 +92,7 @@ describe('createSpy', function () {
       // первоначальное состояние свойства isCalled
       expect(spy.isCalled).to.be.false;
       // первоначальное значение счетчика вызовов
-      expect(spy.callCount).to.equal(0);
+      expect(spy.callCount).to.be.eq(0);
     });
 
     it('should track calls and arguments', function () {
@@ -109,7 +109,7 @@ describe('createSpy', function () {
       // после вызовов
       expect(spy.isCalled).to.be.true;
       // значение счетчика вызовов
-      expect(spy.callCount).to.equal(2);
+      expect(spy.callCount).to.be.eq(2);
 
       // проверка аргументов первого вызова
       expect(spy.calls[0].args).to.deep.equal([1, 2]);
@@ -126,7 +126,7 @@ describe('createSpy', function () {
       const result = spy();
 
       // проверка возвращенного значения
-      expect(result).to.equal('original value');
+      expect(result).to.be.eq('original value');
       // проверка того, что шпион был вызван
       expect(spy.isCalled).to.be.true;
     });
@@ -142,7 +142,7 @@ describe('createSpy', function () {
 
       // проверка того, что возвращено значение
       // из пользовательской реализации
-      expect(result).to.equal('custom');
+      expect(result).to.be.eq('custom');
       // проверка свойства isCalled
       expect(spy.isCalled).to.be.true;
     });
@@ -160,10 +160,10 @@ describe('createSpy', function () {
 
       // проверка возвращенного значения, которое
       // зависит от контекста this
-      expect(result).to.equal(10);
+      expect(result).to.be.eq(10);
       // проверка сохраненного контекста
       // в информации о вызове
-      expect(spy.calls[0].thisArg).to.equal(contextObj);
+      expect(spy.calls[0].thisArg).to.be.eq(contextObj);
     });
 
     it('should preserve `this` context for the custom implementation', function () {
@@ -180,24 +180,26 @@ describe('createSpy', function () {
 
       // проверка возвращенного значения из
       // пользовательской реализации
-      expect(result).to.equal(20);
+      expect(result).to.be.eq(20);
       // проверка сохраненного контекста
-      expect(spy.calls[0].thisArg).to.equal(contextObj);
+      expect(spy.calls[0].thisArg).to.be.eq(contextObj);
     });
 
-    it('restore() on a function spy should reset its history and not throw', function () {
-      const standaloneFn = () => 'standalone result';
-      const fnSpy = createSpy(standaloneFn);
-      // вызов шпиона, чтобы у него была история
-      fnSpy('call standalone');
-      expect(fnSpy.isCalled).to.be.true;
-      expect(fnSpy.callCount).to.equal(1);
-      expect(fnSpy.calls[0].args).to.deep.equal(['call standalone']);
-      // проверка, что вызов restore не вызывает ошибок
-      expect(() => fnSpy.restore()).to.not.throw();
-      // проверки сброса истории
-      expect(fnSpy.callCount).to.equal(0);
-      expect(fnSpy.isCalled).to.be.false;
+    describe('.restore()', function () {
+      it('should reset its history and not throw', function () {
+        const standaloneFn = () => 'standalone result';
+        const fnSpy = createSpy(standaloneFn);
+        // вызов шпиона, чтобы у него была история
+        fnSpy('call standalone');
+        expect(fnSpy.isCalled).to.be.true;
+        expect(fnSpy.callCount).to.be.eq(1);
+        expect(fnSpy.calls[0].args).to.deep.equal(['call standalone']);
+        // проверка, что вызов restore не вызывает ошибок
+        expect(() => fnSpy.restore()).to.not.throw();
+        // проверки сброса истории
+        expect(fnSpy.callCount).to.be.eq(0);
+        expect(fnSpy.isCalled).to.be.false;
+      });
     });
   });
 
@@ -226,7 +228,7 @@ describe('createSpy', function () {
       const spy = createSpy(obj, 'method');
       // проверка того, что свойство объекта
       // теперь является шпионом
-      expect(obj.method).to.equal(spy);
+      expect(obj.method).to.be.eq(spy);
       // проверка того, что шпион является функцией
       expect(obj.method).to.be.a('function');
     });
@@ -239,11 +241,11 @@ describe('createSpy', function () {
 
       // проверка возвращенного значения
       // от оригинального метода
-      expect(result).to.equal('original: TestObj arg1');
+      expect(result).to.be.eq('original: TestObj arg1');
       // проверка счетчика вызовов
-      expect(spy.callCount).to.equal(1);
+      expect(spy.callCount).to.be.eq(1);
       // проверка сохраненного контекста
-      expect(spy.calls[0].thisArg).to.equal(obj);
+      expect(spy.calls[0].thisArg).to.be.eq(obj);
       // проверка сохраненных аргументов
       expect(spy.calls[0].args).to.deep.equal(['arg1']);
     });
@@ -260,45 +262,70 @@ describe('createSpy', function () {
 
       // проверка возвращенного значения
       // от пользовательской реализации
-      expect(result).to.equal('custom: TestObj argCustom');
+      expect(result).to.be.eq('custom: TestObj argCustom');
       // проверка счетчика вызовов
-      expect(spy.callCount).to.equal(1);
+      expect(spy.callCount).to.be.eq(1);
       // проверка сохраненного контекста
-      expect(spy.calls[0].thisArg).to.equal(obj);
+      expect(spy.calls[0].thisArg).to.be.eq(obj);
     });
 
-    it('restore() should put the original method back and reset spy history', function () {
-      // создание шпиона для метода
-      const spy = createSpy(obj, 'method');
-      // вызов шпиона, чтобы у него была история
-      obj.method('call before restore');
-      expect(spy.isCalled).to.be.true;
-      expect(spy.callCount).to.equal(1);
-      expect(obj.method).to.equal(spy);
-      // вызов метода restore на шпионе
-      spy.restore();
-      // проверка, что оригинальный метод восстановлен
-      expect(obj.method).to.equal(originalMethodImpl);
-      // вызов восстановленного метода
-      // для проверки его работоспособности
-      const result = obj.method('call after restore');
-      // проверка результата вызова оригинального метода
-      expect(result).to.equal('original: TestObj call after restore');
-      // проверки сброса истории
-      expect(spy.callCount).to.equal(0);
-      expect(spy.isCalled).to.be.false;
-    });
+    describe('.restore()', function () {
+      it('should put the original method back and reset spy history', function () {
+        // создание шпиона для метода
+        const spy = createSpy(obj, 'method');
+        // вызов шпиона, чтобы у него была история
+        obj.method('call before restore');
+        expect(spy.isCalled).to.be.true;
+        expect(spy.callCount).to.be.eq(1);
+        expect(obj.method).to.be.eq(spy);
+        // вызов метода restore на шпионе
+        spy.restore();
+        // проверка, что оригинальный метод восстановлен
+        expect(obj.method).to.be.eq(originalMethodImpl);
+        // вызов восстановленного метода
+        // для проверки его работоспособности
+        const result = obj.method('call after restore');
+        // проверка результата вызова оригинального метода
+        expect(result).to.be.eq('original: TestObj call after restore');
+        // проверки сброса истории
+        expect(spy.callCount).to.be.eq(0);
+        expect(spy.isCalled).to.be.false;
+      });
 
-    // Этот тест стал частью теста для standalone функции, но если хочешь оставить его здесь для ясности
-    // относительно влияния на `obj` (из beforeEach), то можно.
-    // Я бы его убрал, т.к. его суть (restore на fnSpy не трогает obj.method)
-    // покрывается тем, что fnSpy.restore() вообще не должен иметь дела с obj.
-    // Для чистоты, я перенес логику проверки истории в тест для standalone шпиона выше.
-    // it('restore() on a function spy should not throw and do nothing to objects', function () {
-    //   const fnSpy = createSpy(function () {});
-    //   expect(() => fnSpy.restore()).to.not.throw();
-    //   expect(obj.method).to.equal(originalMethodImpl); // obj из beforeEach
-    // });
+      it('should restore an "own" property by assigning the original value back', function () {
+        const obj = {
+          fn: function () {
+            return 'own';
+          },
+        };
+        expect(Object.prototype.hasOwnProperty.call(obj, 'fn')).to.be.true;
+        const spy = createSpy(obj, 'fn');
+        expect(obj.fn).to.be.eq(spy);
+        spy.restore();
+        expect(obj.fn()).to.be.eq('own');
+        expect(Object.prototype.hasOwnProperty.call(obj, 'fn')).to.be.true;
+      });
+
+      it('should restore a prototype method by deleting the spy from the instance', function () {
+        class Base {
+          method() {
+            return 'prototype';
+          }
+        }
+        const instance = new Base();
+        expect(Object.prototype.hasOwnProperty.call(instance, 'method')).to.be
+          .false;
+        expect(instance.method()).to.be.eq('prototype');
+        const spy = createSpy(instance, 'method');
+        expect(Object.prototype.hasOwnProperty.call(instance, 'method')).to.be
+          .true;
+        expect(instance.method).to.be.eq(spy);
+        spy.restore();
+        expect(Object.prototype.hasOwnProperty.call(instance, 'method')).to.be
+          .false;
+        expect(instance.method()).to.be.eq('prototype');
+      });
+    });
   });
 
   describe('spy properties and methods', function () {
@@ -343,7 +370,7 @@ describe('createSpy', function () {
     describe('.callCount and .isCalled', function () {
       it('should have callCount = 0 and isCalled = false initially', function () {
         // начальное состояние счетчика вызовов
-        expect(spy.callCount).to.equal(0);
+        expect(spy.callCount).to.be.eq(0);
         // начальное состояние флага isCalled
         expect(spy.isCalled).to.be.false;
       });
@@ -352,12 +379,12 @@ describe('createSpy', function () {
         // первый вызов шпиона
         spy(1, 1);
         // состояние после первого вызова
-        expect(spy.callCount).to.equal(1);
+        expect(spy.callCount).to.be.eq(1);
         expect(spy.isCalled).to.be.true;
         // второй вызов шпиона
         spy(2, 2);
         // состояние после второго вызова
-        expect(spy.callCount).to.equal(2);
+        expect(spy.callCount).to.be.eq(2);
       });
     });
   });
