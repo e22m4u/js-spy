@@ -199,20 +199,19 @@ console.log(loggerSpy.isCalled);
 
 Сигнатуры вызова и аргументы:
 
-1. Отслеживание отдельной функции:  
-    `createSpy(targetFn, [customImplementation])`
+1.  Отслеживание отдельной функции:  
+    `createSpy(targetFn, [customImpl])`
     - `targetFn`: Функция, которую требуется отслеживать.
-    - `customImplementation` (необязательно): Пользовательская функция,
+    - `customImpl` (необязательно): Пользовательская функция,
       которая будет вызываться вместо `targetFn`. Должна иметь ту же
       сигнатуру.
-  
-  
-2. Отслеживание метода объекта:  
-    `createSpy(targetObject, methodName, [customImplementation])`
+
+2.  Отслеживание метода объекта:  
+    `createSpy(targetObject, methodName, [customImpl])`
     - `targetObject`: Объект, метод которого будет отслеживаться.
     - `methodName`: Имя метода в `targetObject`, который требуется
       отслеживать.
-    - `customImplementation` (необязательно): Пользовательская функция,
+    - `customImpl` (необязательно): Пользовательская функция,
       которая будет вызываться вместо оригинального метода. Должна
       иметь ту же сигнатуру.
 
@@ -242,8 +241,8 @@ console.log(spy.callCount); // 1
 
 #### spy.calls
 
-- **Тип:** `CallInfo[]` (только для чтения)
-- **Описание:** Возвращает массив вызовов.
+- Тип: `CallInfo[]` (только для чтения)
+- Описание: Возвращает массив вызовов.
 
 ```js
 const fn = (a, b) => a + b;
@@ -271,8 +270,8 @@ console.log(spy.calls);
 
 #### spy.isCalled
 
-- **Тип:** `boolean` (только для чтения)
-- **Описание:** Указывает, был ли шпион вызван хотя бы один раз.
+- Тип: `boolean` (только для чтения)
+- Описание: Указывает, был ли шпион вызван хотя бы один раз.
 
 ```js
 const spy = createSpy();
@@ -283,8 +282,8 @@ console.log(spy.isCalled); // true
 
 #### spy.callCount
 
-- **Тип:** `number` (только для чтения)
-- **Описание:** Количество раз, которое шпион был вызван.
+- Тип: `number` (только для чтения)
+- Описание: Количество раз, которое шпион был вызван.
 
 ```js
 const spy = createSpy();
@@ -339,10 +338,6 @@ console.log(fnSpy.callCount); // 0 (история сброшена)
 
 Фабричная функция для создания экземпляра `SpiesGroup`.
 
-Возвращает:
-
-- Новый экземпляр `SpiesGroup`.
-
 ```js
 import {createSpiesGroup} from '@e22m4u/js-spy';
 
@@ -360,8 +355,11 @@ const group = createSpiesGroup();
 
 Сигнатуры вызова и аргументы идентичны `createSpy`:
 
-1. `group.on(targetFn, [customImplementation])`
-2. `group.on(targetObject, methodName, [customImplementation])`
+1.  Отслеживание отдельной функции:  
+    `group.on(targetFn, [customImpl])`
+
+2.  Отслеживание метода объекта:  
+    `group.on(targetObject, methodName, [customImpl])`
 
 Возвращает:
 

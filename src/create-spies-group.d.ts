@@ -18,11 +18,11 @@ export declare class SpiesGroup {
    * и добавляет его в группу.
    *
    * @param target
-   * @param customImplementation
+   * @param customImpl
    */
   on<TFunc extends AnyCallable>(
     target: TFunc,
-    customImplementation?: TFunc,
+    customImpl?: TFunc,
   ): Spy<TFunc>;
 
   /**
@@ -31,13 +31,13 @@ export declare class SpiesGroup {
    * объекта шпионом.
    *
    * @param target
-   * @param methodNameOrImpl
-   * @param customImplForMethod
+   * @param methodName
+   * @param customImpl
    */
   on<TObj extends object, K extends MethodKey<TObj>>(
     target: TObj,
     methodName: K,
-    customImplForMethod?: TObj[K],
+    customImpl?: TObj[K],
   ): Spy<Extract<TObj[K], AnyCallable>>;
 
   /**
