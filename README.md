@@ -11,7 +11,7 @@
   - [Отслеживание вызова функции](#отслеживание-вызова-функции)
   - [Отслеживание вызова метода](#отслеживание-вызова-метода)
   - [Управление группой шпионов](#управление-группой-шпионов)
-- [API](#api)
+- [Справочник API](#справочник-api)
   - [createSpy(target, [methodNameOrImpl], [customImplForMethod])](#createspytarget-methodnameorimpl-customimplformethod)
   - [Свойства и методы шпиона](#свойства-и-методы-шпиона)
     - [spy(...args)](#spyargs)
@@ -51,24 +51,31 @@ const {createSpy, createSpiesGroup} = require('@e22m4u/js-spy');
 ```js
 import {createSpy} from '@e22m4u/js-spy';
 
+// отслеживаемая функция
 function greet(name) {
   return `Hello, ${name}!`;
 }
 
+// создание шпиона
 const greetSpy = createSpy(greet);
 
+// вызовы шпиона
 greetSpy('World');
 greetSpy('JavaScript');
 
+// количество вызовов
 console.log(greetSpy.isCalled);  // true
 console.log(greetSpy.callCount); // 2
 
-console.log(greetSpy.calls[0].args[0]); // "World"
+// аргументы и возвращаемое значение (первый вызов)
+console.log(greetSpy.calls[0].args[0]);     // "World"
 console.log(greetSpy.calls[0].returnValue); // "Hello, World!"
 
-console.log(greetSpy.calls[1].args[0]); // "JavaScript"
+// аргументы и возвращаемое значение (второй вызов)
+console.log(greetSpy.calls[1].args[0]);     // "JavaScript"
 console.log(greetSpy.calls[1].returnValue); // "Hello, JavaScript!"
 
+// список вызовов
 console.log(greetSpy.calls.length); // 2
 console.log(greetSpy.calls[0]);
 // {
@@ -84,6 +91,7 @@ console.log(greetSpy.calls[0]);
 ```js
 import {createSpy} from '@e22m4u/js-spy';
 
+// объект, содержащий метод для отслеживания
 const calculator = {
   value: 0,
   add(a, b) {
@@ -92,25 +100,32 @@ const calculator = {
   },
 };
 
+// создание шпиона и подмена метода
 const addSpy = createSpy(calculator, 'add');
 
+// первый вызов метода
 calculator.add(5, 3);
 console.log(calculator.value); // 8
 
+// второй вызов метода
 calculator.add(2, 1);
 console.log(calculator.value); // 3
 
+// количество вызовов
 console.log(addSpy.isCalled);  // true
 console.log(addSpy.callCount); // 2
 
-console.log(addSpy.calls[0].args[0]); // 5
-console.log(addSpy.calls[0].args[1]); // 3
+// аргументы и возвращаемое значение (первый вызов)
+console.log(addSpy.calls[0].args[0]);     // 5
+console.log(addSpy.calls[0].args[1]);     // 3
 console.log(addSpy.calls[0].returnValue); // 8
 
-console.log(addSpy.calls[1].args[0]); // 2
-console.log(addSpy.calls[1].args[1]); // 1
+// аргументы и возвращаемое значение (второй вызов)
+console.log(addSpy.calls[1].args[0]);     // 2
+console.log(addSpy.calls[1].args[1]);     // 1
 console.log(addSpy.calls[1].returnValue); // 3
 
+// список вызовов
 console.log(addSpy.calls.length); // 2
 console.log(addSpy.calls[0]);
 // {
@@ -191,7 +206,7 @@ console.log(loggerSpy.isCalled);
 // false (история сброшена)
 ```
 
-## API
+## Справочник API
 
 ### createSpy(target, [methodNameOrImpl], [customImplForMethod])
 
