@@ -75,19 +75,27 @@ console.log(greetSpy.callCount); // 2
 console.log(greetSpy.calls[0].args);        // ["World"]
 console.log(greetSpy.calls[0].returnValue); // "Hello, World!"
 
-// и второго вызова
+// и второго
 console.log(greetSpy.calls[1].args);        // ["JavaScript"]
 console.log(greetSpy.calls[1].returnValue); // "Hello, JavaScript!"
 
-// список вызовов
+// массив вызовов
 console.log(greetSpy.calls.length); // 2
-console.log(greetSpy.calls[0]);
-// {
-//   args: ['World'],
-//   thisArg: undefined,
-//   returnValue: 'Hello, World!',
-//   error: undefined
-// }
+console.log(greetSpy.calls);
+// [
+//   {
+//     args: ['World'],
+//     thisArg: undefined,
+//     returnValue: 'Hello, World!',
+//     error: undefined
+//   },
+//   {
+//     args: ['JavaScript'],
+//     thisArg: undefined,
+//     returnValue: 'Hello, JavaScript!',
+//     error: undefined
+//   }
+// ]
 ```
 
 ### Отслеживание вызова метода
@@ -123,19 +131,27 @@ console.log(addSpy.callCount); // 2
 console.log(addSpy.calls[0].args);        // [5, 3]
 console.log(addSpy.calls[0].returnValue); // 8
 
-// и второго вызова
+// и второго
 console.log(addSpy.calls[1].args);        // [2, 1]
 console.log(addSpy.calls[1].returnValue); // 3
 
-// список вызовов
+// массив вызовов
 console.log(addSpy.calls.length); // 2
-console.log(addSpy.calls[0]);
-// {
-//   args: [5, 3],
-//   thisArg: calculator, // ссылка на объект calculator
-//   returnValue: 8,
-//   error: undefined
-// }
+console.log(addSpy.calls);
+// [
+//   {
+//     args: [5, 3],
+//     thisArg: calculator, // ссылка на объект calculator
+//     returnValue: 8,
+//     error: undefined
+//   },
+//   {
+//     args: [2, 1],
+//     thisArg: calculator,
+//     returnValue: 3,
+//     error: undefined
+//   }
+// ]
 
 // восстановление оригинального метода
 addSpy.restore();
