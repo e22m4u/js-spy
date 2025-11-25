@@ -46,7 +46,7 @@ const {createSpy, createSpiesGroup} = require('@e22m4u/js-spy');
 
 ## Использование
 
-### Отслеживание вызова функции:
+### Отслеживание вызова функции
 
 ```js
 import {createSpy} from '@e22m4u/js-spy';
@@ -79,7 +79,7 @@ console.log(greetSpy.calls[0]);
 // }
 ```
 
-### Отслеживание вызова метода:
+### Отслеживание вызова метода
 
 ```js
 import {createSpy} from '@e22m4u/js-spy';
