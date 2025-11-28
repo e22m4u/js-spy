@@ -12,16 +12,16 @@
   - [Отслеживание вызова метода](#отслеживание-вызова-метода)
   - [Управление группой шпионов](#управление-группой-шпионов)
 - [Справочник API](#справочник-api)
-  - [createSpy(target, [methodNameOrImpl], [customImplForMethod])](#createspytarget-methodnameorimpl-customimplformethod)
+  - [Функция `createSpy`](#функция-createspy)
   - [Свойства и методы шпиона](#свойства-и-методы-шпиона)
     - [spy(...args)](#spyargs)
     - [spy.calls](#spycalls)
     - [spy.isCalled](#spyiscalled)
     - [spy.callCount](#spycallcount)
     - [spy.restore()](#spyrestore)
-  - [createSpiesGroup()](#createspiesgroup)
-  - [Методы SpiesGroup](#методы-spiesgroup)
-    - [group.on(target, [methodNameOrImpl], [customImplForMethod])](#groupon)
+  - [Функция `createSpiesGroup`](#функция-createspiesgroup)
+  - [Методы группы шпионов](#методы-группы-шпионов)
+    - [group.on(...)](#groupon)
     - [group.restore()](#grouprestore)
 - [Тесты](#тесты)
 - [Лицензия](#лицензия)
@@ -46,8 +46,8 @@ const {createSpy, createSpiesGroup} = require('@e22m4u/js-spy');
 
 ## Использование
 
-Шпионы создаются с помощью функции `createSpy`. Она оборачивает целевую
-функцию или метод объекта, позволяя перехватывать вызовы, фиксировать
+Шпионы создаются с помощью функции `createSpy`. Данная функция оборачивает
+целевую функцию или метод объекта, позволяя перехватывать вызовы, фиксировать
 аргументы и возвращаемые значения.
 
 ### Отслеживание вызова функции
@@ -226,11 +226,11 @@ console.log(loggerSpy.isCalled);
 
 ## Справочник API
 
-### createSpy(target, [methodNameOrImpl], [customImplForMethod])
+### Функция `createSpy`
 
 Основная функция для создания шпиона.
 
-Сигнатуры вызова и аргументы:
+Сигнатуры вызова:
 
 1.  Отслеживание отдельной функции:  
     `createSpy(targetFn, [customImpl])`
@@ -367,9 +367,9 @@ fnSpy.restore();
 console.log(fnSpy.callCount); // 0 (история сброшена)
 ```
 
-### createSpiesGroup()
+### Функция `createSpiesGroup`
 
-Фабричная функция для создания экземпляра `SpiesGroup`.
+Фабричная функция для создания экземпляра `SpiesGroup` (группа шпионов).
 
 ```js
 import {createSpiesGroup} from '@e22m4u/js-spy';
@@ -377,16 +377,15 @@ import {createSpiesGroup} from '@e22m4u/js-spy';
 const group = createSpiesGroup();
 ```
 
-### Методы SpiesGroup
+### Методы группы шпионов
 
 Экземпляр `SpiesGroup` имеет следующие методы:
 
-#### group.on(target, [methodNameOrImpl], [customImplForMethod])
+#### group.on(...)
 
-Создает шпиона (используя `createSpy` с теми же аргументами) и добавляет
-его в группу.
+Создает шпиона и добавляет его в группу.
 
-Сигнатуры вызова и аргументы идентичны `createSpy`:
+Сигнатуры вызова:
 
 1.  Отслеживание отдельной функции:  
     `group.on(targetFn, [customImpl])`
