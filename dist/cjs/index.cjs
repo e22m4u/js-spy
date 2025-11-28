@@ -27,27 +27,27 @@ __export(index_exports, {
 module.exports = __toCommonJS(index_exports);
 
 // src/create-spy.js
-function _parseSpyArgs(target, methodNameOrImplFromSpy, customImplForMethodFromSpy) {
+function _parseSpyArgs(target, methodNameOrImpl, customImplForMethod) {
   let originalFn;
   let customImplementation;
   let isMethodSpy = false;
   let objToSpyOn;
   let methodName;
   let hasOwnMethod = false;
-  const isLikelyFunctionSpy = typeof target === "function" && customImplForMethodFromSpy === void 0;
-  const isLikelyMethodSpy = typeof target === "object" && target !== null && typeof methodNameOrImplFromSpy === "string";
+  const isLikelyFunctionSpy = typeof target === "function" && customImplForMethod === void 0;
+  const isLikelyMethodSpy = typeof target === "object" && target !== null && typeof methodNameOrImpl === "string";
   if (isLikelyFunctionSpy) {
     originalFn = target;
-    if (methodNameOrImplFromSpy !== void 0) {
-      if (typeof methodNameOrImplFromSpy !== "function") {
+    if (methodNameOrImpl !== void 0) {
+      if (typeof methodNameOrImpl !== "function") {
         throw new TypeError(
           "When spying on a function, the second argument (custom implementation) must be a function if provided."
         );
       }
-      customImplementation = methodNameOrImplFromSpy;
+      customImplementation = methodNameOrImpl;
     }
   } else if (isLikelyMethodSpy) {
-    methodName = methodNameOrImplFromSpy;
+    methodName = methodNameOrImpl;
     objToSpyOn = target;
     isMethodSpy = true;
     hasOwnMethod = Object.prototype.hasOwnProperty.call(objToSpyOn, methodName);
@@ -63,19 +63,19 @@ function _parseSpyArgs(target, methodNameOrImplFromSpy, customImplForMethodFromS
       );
     }
     originalFn = propertyToSpyOn;
-    if (customImplForMethodFromSpy !== void 0) {
-      if (typeof customImplForMethodFromSpy !== "function") {
+    if (customImplForMethod !== void 0) {
+      if (typeof customImplForMethod !== "function") {
         throw new TypeError(
           "When spying on a method, the third argument (custom implementation) must be a function if provided."
         );
       }
-      customImplementation = customImplForMethodFromSpy;
+      customImplementation = customImplForMethod;
     }
   } else {
-    if (target === null && methodNameOrImplFromSpy === void 0 && customImplForMethodFromSpy === void 0) {
+    if (target === null && methodNameOrImpl === void 0 && customImplForMethod === void 0) {
       throw new TypeError("Attempted to spy on null.");
     }
-    if (methodNameOrImplFromSpy === void 0 && typeof target !== "function") {
+    if (methodNameOrImpl === void 0 && typeof target !== "function") {
       throw new TypeError(
         "Attempted to spy on a non-function value. To spy on an object method, you must provide the method name as the second argument."
       );
@@ -96,7 +96,7 @@ function _parseSpyArgs(target, methodNameOrImplFromSpy, customImplForMethodFromS
   };
 }
 __name(_parseSpyArgs, "_parseSpyArgs");
-function createSpy(target, methodNameOrImpl, customImplForMethod) {
+function createSpy(target = void 0, methodNameOrImpl = void 0, customImplForMethod = void 0) {
   if (typeof target === "undefined" && typeof methodNameOrImpl === "undefined" && typeof customImplForMethod === "undefined") {
     target = /* @__PURE__ */ __name(function() {
     }, "target");
@@ -176,11 +176,9 @@ var SpiesGroup = class {
     __name(this, "SpiesGroup");
   }
   /**
-   * Constructor.
+   * Spies.
    */
-  constructor() {
-    this.spies = [];
-  }
+  spies = [];
   /**
    * Создает шпиона для отдельной функции
    * или метода объекта и добавляет его в группу.

@@ -11,7 +11,7 @@ export declare class SpiesGroup {
    * созданные в этой группе. Не предназначен
    * для прямого доступа.
    */
-  readonly spies: Spy<any>[];
+  spies: Spy<any>[];
 
   /**
    * Создает шпиона для отдельной функции

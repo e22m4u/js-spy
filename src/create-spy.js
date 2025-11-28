@@ -6,11 +6,7 @@
  * @param {Function|undefined} customImplForMethod
  * @returns {object}
  */
-function _parseSpyArgs(
-  target,
-  methodNameOrImplFromSpy,
-  customImplForMethodFromSpy,
-) {
+function _parseSpyArgs(target, methodNameOrImpl, customImplForMethod) {
   // объявление переменных для хранения
   // состояния и результатов разбора аргументов
   let originalFn;
@@ -22,13 +18,13 @@ function _parseSpyArgs(
   // определение вероятности того, что
   // создается шпион для отдельной функции
   const isLikelyFunctionSpy =
-    typeof target === 'function' && customImplForMethodFromSpy === undefined;
+    typeof target === 'function' && customImplForMethod === undefined;
   // определение вероятности того, что
   // создается шпион для метода объекта
   const isLikelyMethodSpy =
     typeof target === 'object' &&
     target !== null &&
-    typeof methodNameOrImplFromSpy === 'string';
+    typeof methodNameOrImpl === 'string';
   // обработка сценария шпионажа
   // за отдельной функцией
   if (isLikelyFunctionSpy) {
@@ -36,10 +32,10 @@ function _parseSpyArgs(
     originalFn = target;
     // проверка наличия второго аргумента, который
     // может быть пользовательской реализацией
-    if (methodNameOrImplFromSpy !== undefined) {
+    if (methodNameOrImpl !== undefined) {
       // генерация ошибки, если второй аргумент
       // (пользовательская реализация) не является функцией
-      if (typeof methodNameOrImplFromSpy !== 'function') {
+      if (typeof methodNameOrImpl !== 'function') {
         throw new TypeError(
           'When spying on a function, the second argument (custom ' +
             'implementation) must be a function if provided.',
@@ -47,14 +43,14 @@ function _parseSpyArgs(
       }
       // пользовательская реализация присваивается,
       // если она предоставлена и является функцией
-      customImplementation = methodNameOrImplFromSpy;
+      customImplementation = methodNameOrImpl;
     }
     // обработка сценария шпионажа
     // за методом объекта
   } else if (isLikelyMethodSpy) {
     // установка параметров для
     // шпионажа за методом
-    methodName = methodNameOrImplFromSpy;
+    methodName = methodNameOrImpl;
     objToSpyOn = target;
     isMethodSpy = true;
     hasOwnMethod = Object.prototype.hasOwnProperty.call(objToSpyOn, methodName);
@@ -81,10 +77,10 @@ function _parseSpyArgs(
     originalFn = propertyToSpyOn;
     // проверка наличия третьего аргумента, который может
     // быть пользовательской реализацией для метода
-    if (customImplForMethodFromSpy !== undefined) {
+    if (customImplForMethod !== undefined) {
       // генерация ошибки, если третья (пользовательская
       // реализация метода) не является функцией
-      if (typeof customImplForMethodFromSpy !== 'function') {
+      if (typeof customImplForMethod !== 'function') {
         throw new TypeError(
           'When spying on a method, the third argument (custom ' +
             'implementation) must be a function if provided.',
@@ -92,7 +88,7 @@ function _parseSpyArgs(
       }
       // пользовательская реализация метода присваивается,
       // если она предоставлена и является функцией
-      customImplementation = customImplForMethodFromSpy;
+      customImplementation = customImplForMethod;
     }
     // обработка невалидных
     // комбинаций аргументов
@@ -101,14 +97,14 @@ function _parseSpyArgs(
     // для попытки шпионить за null
     if (
       target === null &&
-      methodNameOrImplFromSpy === undefined &&
-      customImplForMethodFromSpy === undefined
+      methodNameOrImpl === undefined &&
+      customImplForMethod === undefined
     ) {
       throw new TypeError('Attempted to spy on null.');
     }
     // генерация ошибки, если target не функция
     // и имя метода не предоставлено
-    if (methodNameOrImplFromSpy === undefined && typeof target !== 'function') {
+    if (methodNameOrImpl === undefined && typeof target !== 'function') {
       throw new TypeError(
         'Attempted to spy on a non-function value. To spy on an object method, ' +
           'you must provide the method name as the second argument.',
@@ -146,12 +142,16 @@ function _parseSpyArgs(
  * Шпионить за методом объекта:
  * createSpy(targetObject, methodName, [customImplementation])
  *
- * @param {Function|object} target
+ * @param {Function|object|undefined} target
  * @param {Function|string|undefined} methodNameOrImpl
  * @param {Function|undefined} customImplForMethod
  * @returns {Function}
  */
-export function createSpy(target, methodNameOrImpl, customImplForMethod) {
+export function createSpy(
+  target = undefined,
+  methodNameOrImpl = undefined,
+  customImplForMethod = undefined,
+) {
   // если аргументы не передавались,
   // то определяется функция-пустышка
   if (

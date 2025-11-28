@@ -78,7 +78,7 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
 /**
  * Создает шпиона.
  */
-export function createSpy(): Spy<(...args: any[]) => void>;
+export declare function createSpy(): Spy<(...args: any[]) => void>;
 
 /**
  * Создает шпиона для отдельной функции.
@@ -86,7 +86,7 @@ export function createSpy(): Spy<(...args: any[]) => void>;
  * @param targetFn
  * @param customImpl
  */
-export function createSpy<TFunc extends AnyCallable>(
+export declare function createSpy<TFunc extends AnyCallable>(
   targetFn: TFunc,
   customImpl?: TFunc,
 ): Spy<TFunc>;
@@ -100,7 +100,10 @@ export function createSpy<TFunc extends AnyCallable>(
  * @param methodName
  * @param customImpl
  */
-export function createSpy<TObj extends object, K extends MethodKey<TObj>>(
+export declare function createSpy<
+  TObj extends object,
+  K extends MethodKey<TObj>,
+>(
   targetObject: TObj,
   methodName: K,
   customImpl?: TObj[K],
