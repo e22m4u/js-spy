@@ -176,9 +176,11 @@ var SpiesGroup = class {
     __name(this, "SpiesGroup");
   }
   /**
-   * Spies.
+   * Constructor.
    */
-  spies = [];
+  constructor() {
+    this.spies = [];
+  }
   /**
    * Создает шпиона для отдельной функции
    * или метода объекта и добавляет его в группу.

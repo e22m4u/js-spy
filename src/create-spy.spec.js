@@ -23,11 +23,13 @@ describe('createSpy', function () {
     it('should throw if target is not a function and no method name is given', function () {
       // проверка генерации ошибки для не-функции
       // без указания имени метода
+      // @ts-ignore
       expect(() => createSpy({})).to.throw(
         TypeError,
         'Attempted to spy on a non-function value. To spy on an object method, ' +
           'you must provide the method name as the second argument.',
       );
+      // @ts-ignore
       expect(() => createSpy(123)).to.throw(
         TypeError,
         'Attempted to spy on a non-function value. To spy on an object method, ' +
@@ -39,6 +41,7 @@ describe('createSpy', function () {
       // проверка генерации ошибки, если кастомная
       // реализация для шпиона функции не является функцией
       const targetFn = () => {};
+      // @ts-ignore
       expect(() => createSpy(targetFn, 'not a function')).to.throw(
         TypeError,
         'When spying on a function, the second argument (custom implementation) must be a function if provided.',
@@ -49,6 +52,7 @@ describe('createSpy', function () {
       // проверка генерации ошибки при попытке
       // шпионить за несуществующим методом объекта
       const obj = {};
+      // @ts-ignore
       expect(() => createSpy(obj, 'nonExistentMethod')).to.throw(
         TypeError,
         'Attempted to spy on a non-existent property: "nonExistentMethod"',
@@ -59,6 +63,7 @@ describe('createSpy', function () {
       // проверка генерации ошибки при попытке
       // шпионить за свойством объекта, не являющимся функцией
       const obj = {prop: 123};
+      // @ts-ignore
       expect(() => createSpy(obj, 'prop')).to.throw(
         TypeError,
         'Attempted to spy on "prop" which is not a function. It is a "number".',
@@ -69,6 +74,7 @@ describe('createSpy', function () {
       // проверка генерации ошибки, если кастомная реализация
       // для шпиона метода не является функцией
       const obj = {method: () => {}};
+      // @ts-ignore
       expect(() => createSpy(obj, 'method', 'not a function')).to.throw(
         TypeError,
         'When spying on a method, the third argument (custom implementation) must be a function if provided.',
@@ -190,6 +196,7 @@ describe('createSpy', function () {
         const standaloneFn = () => 'standalone result';
         const fnSpy = createSpy(standaloneFn);
         // вызов шпиона, чтобы у него была история
+        // @ts-ignore
         fnSpy('call standalone');
         expect(fnSpy.isCalled).to.be.true;
         expect(fnSpy.callCount).to.be.eq(1);

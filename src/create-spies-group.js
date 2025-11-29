@@ -6,9 +6,11 @@ import {createSpy} from './create-spy.js';
  */
 export class SpiesGroup {
   /**
-   * Spies.
+   * Constructor.
    */
-  spies = [];
+  constructor() {
+    this.spies = [];
+  }
 
   /**
    * Создает шпиона для отдельной функции
