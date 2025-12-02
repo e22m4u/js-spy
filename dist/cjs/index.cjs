@@ -171,10 +171,7 @@ function createSpy(target = void 0, methodNameOrImpl = void 0, customImplForMeth
 __name(createSpy, "createSpy");
 
 // src/create-spies-group.js
-var SpiesGroup = class {
-  static {
-    __name(this, "SpiesGroup");
-  }
+var _SpiesGroup = class _SpiesGroup {
   /**
    * Constructor.
    */
@@ -185,9 +182,10 @@ var SpiesGroup = class {
    * Создает шпиона для отдельной функции
    * или метода объекта и добавляет его в группу.
    *
-   * @param target
-   * @param methodNameOrImpl
-   * @param customImplForMethod
+   * @param {Function|object} target
+   * @param {Function|string} [methodNameOrImpl]
+   * @param {Function} [customImplForMethod]
+   * @returns {Function}
    */
   on(target, methodNameOrImpl, customImplForMethod) {
     const spy = createSpy(target, methodNameOrImpl, customImplForMethod);
@@ -199,6 +197,8 @@ var SpiesGroup = class {
    * для которых были созданы шпионы в этой группе,
    * и сброс истории вызовов для всех шпионов в группе.
    * Очищает внутренний список шпионов.
+   *
+   * @returns {SpiesGroup}
    */
   restore() {
     this.spies.forEach((spy) => spy.restore());
@@ -206,6 +206,8 @@ var SpiesGroup = class {
     return this;
   }
 };
+__name(_SpiesGroup, "SpiesGroup");
+var SpiesGroup = _SpiesGroup;
 function createSpiesGroup() {
   return new SpiesGroup();
 }

@@ -2,8 +2,8 @@
  * Вспомогательная функция для разбора аргументов createSpy.
  *
  * @param {Function|object} target
- * @param {Function|string|undefined} methodNameOrImpl
- * @param {Function|undefined} customImplForMethod
+ * @param {Function|string} [methodNameOrImpl]
+ * @param {Function} [customImplForMethod]
  * @returns {object}
  */
 function _parseSpyArgs(target, methodNameOrImpl, customImplForMethod) {
@@ -142,9 +142,9 @@ function _parseSpyArgs(target, methodNameOrImpl, customImplForMethod) {
  * Шпионить за методом объекта:
  * createSpy(targetObject, methodName, [customImplementation])
  *
- * @param {Function|object|undefined} target
- * @param {Function|string|undefined} methodNameOrImpl
- * @param {Function|undefined} customImplForMethod
+ * @param {Function|object} [target]
+ * @param {Function|string} [methodNameOrImpl]
+ * @param {Function} [customImplForMethod]
  * @returns {Function}
  */
 export function createSpy(

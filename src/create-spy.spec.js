@@ -157,6 +157,7 @@ describe('createSpy', function () {
       // определение объекта с методом, который
       // будет использоваться как target функция
       const contextObj = {val: 10};
+      // eslint-disable-next-line jsdoc/require-jsdoc
       function originalFn() {
         return this.val;
       }
@@ -177,6 +178,7 @@ describe('createSpy', function () {
       // использующей контекст this
       const contextObj = {val: 20};
       const originalFn = () => {};
+      // eslint-disable-next-line jsdoc/require-jsdoc
       function customImpl() {
         return this.val;
       }
