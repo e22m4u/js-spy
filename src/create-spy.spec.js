@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import {expect} from 'chai';
 import {createSpy} from './create-spy.js';
 

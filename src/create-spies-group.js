@@ -16,9 +16,10 @@ export class SpiesGroup {
    * Создает шпиона для отдельной функции
    * или метода объекта и добавляет его в группу.
    *
-   * @param target
-   * @param methodNameOrImpl
-   * @param customImplForMethod
+   * @param {Function|object} [target]
+   * @param {Function|string} [methodNameOrImpl]
+   * @param {Function} [customImplForMethod]
+   * @returns {Function}
    */
   on(target, methodNameOrImpl, customImplForMethod) {
     const spy = createSpy(target, methodNameOrImpl, customImplForMethod);
@@ -31,6 +32,8 @@ export class SpiesGroup {
    * для которых были созданы шпионы в этой группе,
    * и сброс истории вызовов для всех шпионов в группе.
    * Очищает внутренний список шпионов.
+   *
+   * @returns {this}
    */
   restore() {
     this.spies.forEach(spy => spy.restore());
