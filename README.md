@@ -36,12 +36,12 @@ npm install @e22m4u/js-spy
 
 *ESM*
 ```js
-import {createSpy} from '@e22m4u/js-spy';
+import {createSpy, createSpiesGroup} from '@e22m4u/js-spy';
 ```
 
 *CommonJS*
 ```js
-const {createSpy} = require('@e22m4u/js-spy');
+const {createSpy, createSpiesGroup} = require('@e22m4u/js-spy');
 ```
 
 ## Использование
