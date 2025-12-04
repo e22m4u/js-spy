@@ -16,7 +16,7 @@
   - [Свойства и методы шпиона](#свойства-и-методы-шпиона)
     - [spy(...args)](#spyargs)
     - [spy.calls](#spycalls)
-    - [spy.isCalled](#spyiscalled)
+    - [spy.called](#spycalled)
     - [spy.callCount](#spycallcount)
     - [spy.restore()](#spyrestore)
   - [Функция `createSpiesGroup`](#функция-createspiesgroup)
@@ -68,7 +68,7 @@ greetSpy('World');
 greetSpy('JavaScript');
 
 // количество вызовов
-console.log(greetSpy.isCalled);  // true
+console.log(greetSpy.called);  // true
 console.log(greetSpy.callCount); // 2
 
 // аргументы и возвращаемое значение первого вызова
@@ -124,7 +124,7 @@ calculator.add(2, 1);
 console.log(calculator.value); // 3
 
 // количество вызовов
-console.log(addSpy.isCalled);  // true
+console.log(addSpy.called);  // true
 console.log(addSpy.callCount); // 2
 
 // аргументы и возвращаемое значение первого вызова
@@ -210,7 +210,7 @@ console.log(loggerSpy.callCount);      // 1
 // восстановление всех шпионов в группе:
 //   - оригинальные методы service.fetchData
 //     и service.processItem будут восстановлены
-//   - история вызовов (callCount, isCalled, calls и т.д.)
+//   - история вызовов (callCount, called, calls и т.д.)
 //     для fetchDataSpy, processItemSpy и loggerSpy
 //     будет сброшена
 //   - внутренний список шпионов в группе будет очищен
@@ -220,7 +220,7 @@ console.log(service.fetchData === fetchDataSpy);
 // false (оригинальный метод восстановлен)
 console.log(fetchDataSpy.callCount);
 // 0 (история сброшена)
-console.log(loggerSpy.isCalled);
+console.log(loggerSpy.called);
 // false (история сброшена)
 ```
 
@@ -301,16 +301,16 @@ console.log(spy.calls);
 // ]
 ```
 
-#### spy.isCalled
+#### spy.called
 
 - Тип: `boolean` (только для чтения)
 - Описание: Указывает, был ли шпион вызван хотя бы один раз.
 
 ```js
 const spy = createSpy();
-console.log(spy.isCalled); // false
+console.log(spy.called); // false
 spy();
-console.log(spy.isCalled); // true
+console.log(spy.called); // true
 ```
 
 #### spy.callCount
@@ -333,7 +333,7 @@ console.log(spy.callCount); // 2
 - Восстанавливает оригинальный метод, если шпион был создан
   для метода объекта.
 - Сбрасывает историю вызовов шпиона (`callCount` становится 0,
-  `isCalled` становится `false`, и все записи о вызовах очищаются).
+  `called` становится `false`, и все записи о вызовах очищаются).
 - Если шпион был создан для отдельной функции (а не для метода объекта),
   восстановление метода не происходит (так как нечего восстанавливать),
   но история вызовов все равно сбрасывается.
@@ -406,7 +406,7 @@ const obj = {greet: () => 'Hello'};
 const greetSpy = group.on(obj, 'greet');
 // obj.greet теперь шпион, и greetSpy добавлен в группу
 obj.greet();
-console.log(greetSpy.isCalled); // true
+console.log(greetSpy.called); // true
 ```
 
 #### group.restore()

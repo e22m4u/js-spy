@@ -146,7 +146,7 @@ function createSpy(target = void 0, methodNameOrImpl = void 0, customImplForMeth
     enumerable: true,
     configurable: false
   });
-  Object.defineProperty(spy, "isCalled", {
+  Object.defineProperty(spy, "called", {
     get: /* @__PURE__ */ __name(() => callLog.count > 0, "get"),
     enumerable: true,
     configurable: false
@@ -167,6 +167,7 @@ function createSpy(target = void 0, methodNameOrImpl = void 0, customImplForMeth
   if (isMethodSpy && objToSpyOn) {
     objToSpyOn[methodName] = spy;
   }
+  spy.__isSpy = true;
   return spy;
 }
 __name(createSpy, "createSpy");

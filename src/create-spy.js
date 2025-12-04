@@ -235,9 +235,9 @@ export function createSpy(
     enumerable: true,
     configurable: false,
   });
-  // определение свойства `isCalled` на шпионе,
+  // определение свойства `called` на шпионе,
   // указывающего, был ли шпион вызван
-  Object.defineProperty(spy, 'isCalled', {
+  Object.defineProperty(spy, 'called', {
     get: () => callLog.count > 0,
     enumerable: true,
     configurable: false,
@@ -269,10 +269,12 @@ export function createSpy(
     callLog.calls = [];
   };
   // если создается шпион для метода объекта,
-  // оригинальный метод немедленно заменяется шпионом
+  // оригинальный метод заменяется шпионом
   if (isMethodSpy && objToSpyOn) {
     objToSpyOn[methodName] = spy;
   }
+  // флаг для определения шпиона
+  spy.__isSpy = true;
   // возврат созданной и настроенной
   // функции-шпиона
   return spy;

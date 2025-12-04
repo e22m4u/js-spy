@@ -64,7 +64,7 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
    *
    * @readonly
    */
-  readonly isCalled: boolean;
+  readonly called: boolean;
 
   /**
    * Восстанавливает оригинальный метод,
