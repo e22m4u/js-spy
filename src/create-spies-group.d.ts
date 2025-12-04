@@ -20,7 +20,7 @@ export declare class SpiesGroup {
    * @param target
    * @param customImpl
    */
-  on<TFunc extends AnyCallable>(
+  spy<TFunc extends AnyCallable>(
     target: TFunc,
     customImpl?: TFunc,
   ): Spy<TFunc>;
@@ -34,7 +34,7 @@ export declare class SpiesGroup {
    * @param methodName
    * @param customImpl
    */
-  on<TObj extends object, K extends MethodKey<TObj>>(
+  spy<TObj extends object, K extends MethodKey<TObj>>(
     target: TObj,
     methodName: K,
     customImpl?: AnyCallable,

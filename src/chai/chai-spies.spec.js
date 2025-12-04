@@ -22,7 +22,7 @@ describe('chaiSpies', function () {
     expect(spy).to.have.been.called();
   });
 
-  it('should assert that something has been spied on on a certain index', function () {
+  it('should assert that something has been spied on a certain index', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
     spy('foobar1');

@@ -1,5 +1,9 @@
 declare global {
   namespace Chai {
+    /**
+     * Определение LanguageChains.on нужно, чтобы TypeScript разрешил
+     * писать предложения типа `expect(spy).on.nth(3)...`.
+     */
     interface LanguageChains {
       on: Assertion;
     }
