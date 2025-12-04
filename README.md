@@ -261,14 +261,16 @@ expect(spy).to.not.be.called();
 
 Модификаторы:
 
-- `once`: один раз;  
-- `twice`: два раза;  
-- `exactly(n)`: точно n раз;  
-- `min(n)` или `at.least(n)`: минимум n раз;  
-- `max(n)` или `at.most(n)`: максимум n раз;  
-- `above(n)` или `gt(n)`: больше n раз;  
-- `below(n)` или `lt(n)`: меньше n раз;  
-  
+- `once`: один раз;
+- `twice`: два раза;
+- `exactly(n)`: точно n раз;
+- `min(n)` или `at.least(n)`: минимум n раз;
+- `max(n)` или `at.most(n)`: максимум n раз;
+- `above(n)` или `gt(n)`: больше n раз;
+- `below(n)` или `lt(n)`: меньше n раз;
+
+Пример:
+
 ```js
 // проверка точного количества вызовов
 expect(spy).to.have.been.called.once;
