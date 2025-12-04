@@ -268,7 +268,7 @@ expect(spy).to.not.be.called();
 - `max(n)` или `at.most(n)`: максимум n раз;
 - `above(n)` или `gt(n)`: больше n раз;
 - `below(n)` или `lt(n)`: меньше n раз;
-&ZeroWidthSpace;
+
 ```js
 // проверка точного количества вызовов
 expect(spy).to.have.been.called.once;
