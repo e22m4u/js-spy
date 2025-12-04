@@ -21,7 +21,7 @@
     - [spy.restore()](#spyrestore)
   - [Функция `createSpiesGroup`](#функция-createspiesgroup)
   - [Методы группы шпионов](#методы-группы-шпионов)
-    - [group.spy(...)](#groupon)
+    - [group.on(...)](#groupon)
     - [group.restore()](#grouprestore)
 - [Тесты](#тесты)
 - [Лицензия](#лицензия)
@@ -187,12 +187,12 @@ function standaloneLogger(message) {
 const group = createSpiesGroup();
 
 // добавление шпионов в группу:
-//   метод group.spy() работает аналогично createSpy(),
+//   метод group.on() работает аналогично createSpy(),
 //   но добавляет шпиона в группу и возвращает созданного
 //   шпиона
-const fetchDataSpy = group.spy(service, 'fetchData');
-const processItemSpy = group.spy(service, 'processItem');
-const loggerSpy = group.spy(standaloneLogger);
+const fetchDataSpy = group.on(service, 'fetchData');
+const processItemSpy = group.on(service, 'processItem');
+const loggerSpy = group.on(standaloneLogger);
 
 // так как методы заменяются шпионами прямо на объекте,
 // допустимо вызывать непосредственно их
@@ -341,7 +341,7 @@ expect(spy).on.nth(10).be.called.with('result');
 
 ### Свойства и методы шпиона
 
-Каждая функция-шпион, возвращаемая `createSpy` (или `group.spy`), обладает
+Каждая функция-шпион, возвращаемая `createSpy` (или `group.on`), обладает
 следующими свойствами и методами:
 
 #### spy(...args)
@@ -468,17 +468,17 @@ const group = createSpiesGroup();
 
 Экземпляр `SpiesGroup` имеет следующие методы:
 
-#### group.spy(...)
+#### group.on(...)
 
 Создает шпиона и добавляет его в группу.
 
 Сигнатуры вызова:
 
 1.  Отслеживание отдельной функции:  
-    `group.spy(targetFn, [customImpl])`
+    `group.on(targetFn, [customImpl])`
 
 2.  Отслеживание метода объекта:  
-    `group.spy(targetObject, methodName, [customImpl])`
+    `group.on(targetObject, methodName, [customImpl])`
 
 Возвращает:
 
@@ -490,7 +490,7 @@ const group = createSpiesGroup();
 const group = createSpiesGroup();
 const obj = {greet: () => 'Hello'};
 
-const greetSpy = group.spy(obj, 'greet');
+const greetSpy = group.on(obj, 'greet');
 // obj.greet теперь шпион, и greetSpy добавлен в группу
 obj.greet();
 console.log(greetSpy.called); // true
@@ -525,8 +525,8 @@ const service = {
 function utilFn() { /* ... */ }
 
 // создание шпионов
-const processSpy = group.spy(service, 'process');
-const utilSpy = group.spy(utilFn);
+const processSpy = group.on(service, 'process');
+const utilSpy = group.on(utilFn);
 
 // вызов отслеживаемого метода
 // и шпиона одиночной функции

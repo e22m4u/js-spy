@@ -21,29 +21,29 @@ describe('SpiesGroup', function () {
       group = createSpiesGroup();
     });
 
-    describe('.spy(target, methodNameOrImpl, customImplForMethod)', function () {
+    describe('.on(target, methodNameOrImpl, customImplForMethod)', function () {
       it('should create a spy using createSpy with the given arguments', function () {
         const targetFn = () => {};
         const customImpl = () => {};
         // шпион для standalone функции
-        const fnSpy = group.spy(targetFn);
+        const fnSpy = group.on(targetFn);
         expect(fnSpy).to.be.a('function');
         // проверка, что это действительно шпион
         expect(fnSpy.callCount).to.equal(0);
         // шпион для standalone функции с кастомной реализацией
-        const fnSpyWithImpl = group.spy(targetFn, customImpl);
+        const fnSpyWithImpl = group.on(targetFn, customImpl);
         // вызов для проверки кастомной реализации
         fnSpyWithImpl();
         expect(fnSpyWithImpl.calls[0].returnValue).to.equal(customImpl());
         // шпион для метода объекта
         const obj = {method: () => 'original method'};
-        const methodSpy = group.spy(obj, 'method');
+        const methodSpy = group.on(obj, 'method');
         // проверка замены метода
         expect(obj.method).to.equal(methodSpy);
         // шпион для метода объекта с кастомной реализацией
         const objWithCustom = {method: () => 'original method 2'};
         const customMethodImpl = () => 'custom method';
-        group.spy(objWithCustom, 'method', customMethodImpl);
+        group.on(objWithCustom, 'method', customMethodImpl);
         // проверка вызова кастомной реализации
         expect(objWithCustom.method()).to.equal('custom method');
       });
@@ -51,17 +51,17 @@ describe('SpiesGroup', function () {
       it('should add the created spy to the internal spies array', function () {
         const targetFn1 = () => {};
         const targetFn2 = () => {};
-        const spy1 = group.spy(targetFn1);
+        const spy1 = group.on(targetFn1);
         expect(group.spies).to.have.lengthOf(1);
         expect(group.spies[0]).to.equal(spy1);
-        const spy2 = group.spy(targetFn2);
+        const spy2 = group.on(targetFn2);
         expect(group.spies).to.have.lengthOf(2);
         expect(group.spies[1]).to.equal(spy2);
       });
 
       it('should return the created spy instance', function () {
         const targetFn = () => {};
-        const returnedSpy = group.spy(targetFn);
+        const returnedSpy = group.on(targetFn);
         expect(returnedSpy).to.be.a('function');
         // проверка, что это тот же шпион, что и в массиве
         expect(group.spies[0]).to.equal(returnedSpy);
@@ -92,10 +92,10 @@ describe('SpiesGroup', function () {
           return 'standalone2';
         };
 
-        spyObj1 = group.spy(obj1, 'method');
-        spyFn1 = group.spy(standaloneFn1);
-        spyObj2 = group.spy(obj2, 'method');
-        spyFn2 = group.spy(standaloneFn2);
+        spyObj1 = group.on(obj1, 'method');
+        spyFn1 = group.on(standaloneFn1);
+        spyObj2 = group.on(obj2, 'method');
+        spyFn2 = group.on(standaloneFn2);
 
         // вызов всех шпионов для наполнения истории
         obj1.method(); // spyObj1

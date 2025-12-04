@@ -431,7 +431,7 @@ var _SpiesGroup = class _SpiesGroup {
    * @param {Function} [customImplForMethod]
    * @returns {Function}
    */
-  spy(target, methodNameOrImpl, customImplForMethod) {
+  on(target, methodNameOrImpl, customImplForMethod) {
     const spy = createSpy(target, methodNameOrImpl, customImplForMethod);
     this.spies.push(spy);
     return spy;
