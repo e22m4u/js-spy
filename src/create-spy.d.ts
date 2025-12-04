@@ -28,7 +28,7 @@ export interface CallInfo<Args extends any[] = any[], Return = any> {
    * Ошибка, выброшенная шпионом.
    * (undefined, если шпион не выбросил ошибку)
    */
-  readonly error: unknown | undefined;
+  readonly error: any;
 }
 
 /**
@@ -68,9 +68,9 @@ export interface Spy<TFunc extends AnyCallable = AnyCallable> {
 
   /**
    * Восстанавливает оригинальный метод,
-   * если шпион был создан для метода объекта.
-   * Ничего не делает, если шпион был создан
-   * для отдельной функции.
+   * если шпион был создан для метода объекта,
+   * и сбрасывает историю вызовов, если шпион
+   * был создан для отдельной функции.
    */
   restore(): void;
 }

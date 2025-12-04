@@ -224,6 +224,93 @@ console.log(loggerSpy.called);
 // false (история сброшена)
 ```
 
+## Плагин для Chai
+
+Плагин интегрируется в библиотеку [chai](https://www.npmjs.com/package/chai)
+и предоставляет набор утверждений для проверки состояния шпионов. Расширение
+позволяет проверять факты вызова функций, количество вызовов, переданные
+аргументы и порядок выполнения.
+
+Подключение плагина выполняется через метод `use`.
+
+```js
+import chai from 'chai';
+import {chaiSpiesPlugin} from '@e22m4u/js-spy';
+
+chai.use(chaiSpiesPlugin);
+```
+
+Базовый пример:
+
+```js
+// проверка, является ли объект шпионом
+expect(fn).to.be.spy;
+expect(obj).to.not.be.spy;
+
+// проверка, что шпион был вызван хотя бы раз
+expect(spy).to.be.called();
+
+// проверка отсутствия вызовов
+expect(spy).to.not.be.called();
+```
+
+Количество вызовов проверяется с помощью специальных модификаторов.
+Доступны методы для точного совпадения, а также для проверки
+минимального и максимального количества раз.
+
+Модификаторы:
+
+- `once`: один раз;
+- `twice`: два раза;
+- `exactly(n)`: точно n раз;
+- `min(n)` или `at.least(n)`: минимум n раз;
+- `max(n)` или `at.most(n)`: максимум n раз;
+- `above(n)` или `gt(n)`: больше n раз;
+- `below(n)` или `lt(n)`: меньше n раз;
+
+```js
+// проверка точного количества вызовов
+expect(spy).to.have.been.called.once;
+expect(spy).to.have.been.called.twice;
+expect(spy).to.have.been.called.exactly(3);
+
+// проверка диапазона вызовов
+expect(spy).to.have.been.called.min(1);
+expect(spy).to.have.been.called.at.most(5);
+expect(spy).to.have.been.called.above(0);
+```
+
+Проверка аргументов осуществляется методом `with`. Сравнение
+производится строго: количество и значения аргументов должны совпадать.
+Цепочка `always` позволяет утверждать, что все вызовы шпиона
+соответствовали условию.
+
+```js
+// проверка, что шпион был вызван с аргументами 1 и 'foo'
+expect(spy).to.have.been.called.with(1, 'foo');
+
+// проверка, что каждый вызов содержал указанные аргументы
+expect(spy).to.have.been.called.always.with(true);
+```
+
+Доступна проверка аргументов для конкретного порядкового номера вызова.
+Для этого используются свойства `first`, `second`, `third` или метод
+`nth(index)`.
+
+```js
+// проверка аргументов первого вызова
+expect(spy).to.have.been.called.first.with('start');
+
+// проверка аргументов второго вызова
+expect(spy).to.have.been.called.second.with('process');
+
+// проверка аргументов третьего вызова
+expect(spy).to.have.been.called.third.with('end');
+
+// проверка аргументов десятого вызова
+expect(spy).on.nth(10).be.called.with('result');
+```
+
 ## Справочник API
 
 ### Функция `createSpy`

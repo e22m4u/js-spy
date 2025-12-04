@@ -20,9 +20,9 @@ export function chaiSpiesPlugin(chai, _) {
 
   function assertCalled (n) {
     new Assertion(this._obj).to.be.spy;
-    var spy = this._obj;
+    const spy = this._obj;
 
-    if (n) {
+    if (n != undefined) {
       this.assert(
           spy.calls.length === n
         , 'expected ' + this._obj + ' to have been called #{exp} but got #{act}'
@@ -68,28 +68,23 @@ export function chaiSpiesPlugin(chai, _) {
 
   function nthCallWith(spy, n, expArgs) {
     if (spy.calls.length <= n) return false;
-
-    var actArgs = spy.calls[n].args.slice()
-      , passed = 0;
-
-    expArgs.forEach(function (expArg) {
-      for (var i = 0; i < actArgs.length; i++) {
-        if (_.eql(actArgs[i], expArg)) {
-          passed++;
-          actArgs.splice(i, 1);
-          break;
-        }
+    const actArgs = spy.calls[n].args;
+    if (actArgs.length !== expArgs.length) return false;
+    // проверка каждого ожидаемого аргумента на строгое
+    // соответствие позиции и значения
+    for (let i = 0; i < expArgs.length; i++) {
+      if (!_.eql(actArgs[i], expArgs[i])) {
+        return false;
       }
-    });
-
-    return passed === expArgs.length;
+    }
+    return true;
   }
 
   function numberOfCallsWith(spy, expArgs) {
-    var found = 0
-      , calls = spy.calls;
+    let found = 0;
+    const calls = spy.calls;
 
-    for (var i = 0; i < calls.length; i++) {
+    for (let i = 0; i < calls.length; i++) {
       if (nthCallWith(spy, i, expArgs)) {
         found++;
       }
@@ -133,22 +128,24 @@ export function chaiSpiesPlugin(chai, _) {
 
   function assertWith() {
     new Assertion(this._obj).to.be.spy;
-    var expArgs = [].slice.call(arguments, 0)
+    const expArgs = [].slice.call(arguments, 0)
       , spy = this._obj
       , calls = spy.calls
       , always = _.flag(this, 'spy always')
       , nthCall = _.flag(this, 'spy nth call with');
 
     if (always) {
-      var passed = numberOfCallsWith(spy, expArgs);
+      const passed = numberOfCallsWith(spy, expArgs);
       this.assert(
-          calls.length > 0 && passed === calls.length
+          arguments.length
+            ? calls.length && passed === calls.length
+            : calls.length === 0
         , 'expected ' + this._obj + ' to have been always called with #{exp} but got ' + passed + ' out of ' + calls.length
         , 'expected ' + this._obj + ' to have not always been called with #{exp}'
         , expArgs
       );
     } else if (nthCall) {
-      var ordinalNumber = generateOrdinalNumber(nthCall),
+      const ordinalNumber = generateOrdinalNumber(nthCall),
           actArgs = calls[nthCall - 1];
       new Assertion(this._obj).to.be.have.been.called.min(nthCall);
       this.assert(
@@ -185,59 +182,14 @@ export function chaiSpiesPlugin(chai, _) {
 
   Assertion.addMethod('exactly', function () {
     new Assertion(this._obj).to.be.spy;
-    var always = _.flag(this, 'spy always')
-      , _with = _.flag(this, 'spy with')
-      , args = [].slice.call(arguments, 0)
-      , calls = this._obj.calls
-      , nthCall = _.flag(this, 'spy nth call with')
-      , passed;
-
-    if (always && _with) {
-      passed = 0
-      calls.forEach(function (call) {
-        if (call.args.length !== args.length) return;
-        if (_.eql(call.args, args)) passed++;
-      });
-
-      this.assert(
-          calls.length > 0 && passed === calls.length
-        , 'expected ' + this._obj + ' to have been always called with exactly #{exp} but got ' + passed + ' out of ' + calls.length
-        , 'expected ' + this._obj + ' to have not always been called with exactly #{exp}'
-        , args
-      );
-    } else if(_with && nthCall) {
-      var ordinalNumber = generateOrdinalNumber(nthCall),
-          actArgs = calls[nthCall - 1];
-      new Assertion(this._obj).to.be.have.been.called.min(nthCall);
-      this.assert(
-          _.eql(actArgs, args)
-        , 'expected ' + this._obj + ' to have been called at the ' + ordinalNumber + ' time with exactly #{exp} but got #{act}'
-        , 'expected ' + this._obj + ' to have not been called at the ' + ordinalNumber + ' time with exactly #{exp}'
-        , args
-        , actArgs
-      );
-    } else if (_with) {
-      passed = 0;
-      calls.forEach(function (call) {
-        if (call.args.length !== args.length) return;
-        if (_.eql(call.args, args)) passed++;
-      });
-
-      this.assert(
-          passed > 0
-        , 'expected ' + this._obj + ' to have been called with exactly #{exp}'
-        , 'expected ' + this._obj + ' to not have been called with exactly #{exp} but got ' + passed + ' times'
-        , args
-      );
-    } else {
-      this.assert(
-          this._obj.calls.length === args[0]
-        , 'expected ' + this._obj + ' to have been called #{exp} times but got #{act}'
-        , 'expected ' + this._obj + ' to not have been called #{exp} times'
-        , args[0]
-        , this._obj.calls.length
-      );
-    }
+    const args = [].slice.call(arguments, 0);
+    this.assert(
+        this._obj.calls.length === args[0]
+      , 'expected ' + this._obj + ' to have been called #{exp} times but got #{act}'
+      , 'expected ' + this._obj + ' to not have been called #{exp} times'
+      , args[0]
+      , this._obj.calls.length
+    );
   });
 
   function above (_super) {

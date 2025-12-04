@@ -11,13 +11,13 @@ describe('chaiSpiesPlugin', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
     expect(spy).to.be.spy;
-    expect({}).not.to.be.spy;
+    expect({}).to.not.be.spy;
   });
 
   it('should assert that a spy has been called', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.not.called();
+    expect(spy).to.not.have.been.called();
     spy();
     expect(spy).to.have.been.called();
   });
@@ -34,43 +34,51 @@ describe('chaiSpiesPlugin', function () {
   it('should assert that a spy has been called exactly once', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.called.not.once;
+    expect(spy).to.not.have.been.called.once;
     spy();
     expect(spy).to.have.been.called.once;
     spy();
-    expect(spy).to.have.been.called.not.once;
+    expect(spy).to.not.have.been.called.once;
   });
 
   it('should assert that a spy has been called exactly twice', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.called.not.twice;
+    expect(spy).to.not.have.been.called.twice;
     spy();
-    expect(spy).to.have.been.called.not.twice;
+    expect(spy).to.not.have.been.called.twice;
     spy();
     expect(spy).to.have.been.called.twice;
     spy();
-    expect(spy).to.have.been.called.not.twice;
+    expect(spy).to.not.have.been.called.twice;
+  });
+
+  it('should assert that a spy has been called exactly 0 times', function () {
+    const fn = () => undefined;
+    const spy = createSpy(fn);
+    expect(spy).to.have.been.called.exactly(0);
+    spy();
+    expect(spy).to.not.have.been.called.exactly(0);
   });
 
   it('should assert that a spy has been called exactly *n times', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.called.not.exactly(2);
+    expect(spy).to.not.have.been.called.exactly(2);
     spy();
-    expect(spy).to.have.been.called.not.exactly(2);
+    expect(spy).to.not.have.been.called.exactly(2);
     spy();
     expect(spy).to.have.been.called.exactly(2);
     spy();
-    expect(spy).to.have.been.called.not.exactly(2);
+    expect(spy).to.not.have.been.called.exactly(2);
   });
 
   it('should assert that a spy has been called minimum of *n times', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.called.not.min(2);
+    expect(spy).to.not.have.been.called.min(2);
     spy();
-    expect(spy).to.have.been.called.not.min(2);
+    expect(spy).to.not.have.been.called.min(2);
     spy();
     expect(spy).to.have.been.called.min(2);
     spy();
@@ -86,17 +94,17 @@ describe('chaiSpiesPlugin', function () {
     spy();
     expect(spy).to.have.been.called.max(2);
     spy();
-    expect(spy).to.have.been.called.not.max(2);
+    expect(spy).to.not.have.been.called.max(2);
   });
 
   it('should assert that a spy has been called more than *n times', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.called.not.above(2);
+    expect(spy).to.not.have.been.called.above(2);
     spy();
-    expect(spy).to.have.been.called.not.above(2);
+    expect(spy).to.not.have.been.called.above(2);
     spy();
-    expect(spy).to.have.been.called.not.above(2);
+    expect(spy).to.not.have.been.called.above(2);
     spy();
     expect(spy).to.have.been.called.above(2);
   });
@@ -108,19 +116,19 @@ describe('chaiSpiesPlugin', function () {
     spy();
     expect(spy).to.have.been.called.below(2);
     spy();
-    expect(spy).to.have.been.called.not.below(2);
+    expect(spy).to.not.have.been.called.below(2);
     spy();
-    expect(spy).to.have.been.called.not.below(2);
+    expect(spy).to.not.have.been.called.below(2);
   });
 
   it('should assert that a spy has been called greater than *n times', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.called.not.gt(2);
+    expect(spy).to.not.have.been.called.gt(2);
     spy();
-    expect(spy).to.have.been.called.not.gt(2);
+    expect(spy).to.not.have.been.called.gt(2);
     spy();
-    expect(spy).to.have.been.called.not.gt(2);
+    expect(spy).to.not.have.been.called.gt(2);
     spy();
     expect(spy).to.have.been.called.gt(2);
   });
@@ -132,15 +140,15 @@ describe('chaiSpiesPlugin', function () {
     spy();
     expect(spy).to.have.been.called.lt(2);
     spy();
-    expect(spy).to.have.been.called.not.lt(2);
+    expect(spy).to.not.have.been.called.lt(2);
     spy();
-    expect(spy).to.have.been.called.not.lt(2);
+    expect(spy).to.not.have.been.called.lt(2);
   });
 
   it('should assert that a spy has been called first', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.not.called.first;
+    expect(spy).to.not.have.been.called.first;
     spy();
     expect(spy).to.have.been.called.first;
     spy();
@@ -150,9 +158,9 @@ describe('chaiSpiesPlugin', function () {
   it('should assert that a spy has been called second', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.not.called.second;
+    expect(spy).to.not.have.been.called.second;
     spy();
-    expect(spy).to.have.been.not.called.second;
+    expect(spy).to.not.have.been.called.second;
     spy();
     expect(spy).to.have.been.called.second;
   });
@@ -160,59 +168,42 @@ describe('chaiSpiesPlugin', function () {
   it('should assert that a spy has been called third', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.not.called.third;
+    expect(spy).to.not.have.been.called.third;
     spy();
-    expect(spy).to.have.been.not.called.third;
+    expect(spy).to.not.have.been.called.third;
     spy();
-    expect(spy).to.have.been.not.called.third;
+    expect(spy).to.not.have.been.called.third;
     spy();
     expect(spy).to.have.been.called.third;
   });
 
-  it('should assert that a spy has been called with given arguments at least once, even if more arguments were provided', function () {
+  it('should assert that a spy has been called with given arguments and match its order', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.not.called.with(1, 2);
-    spy();
-    expect(spy).to.have.been.not.called.with(1, 2);
+    expect(spy).to.not.have.been.called.with(1);
     spy(1, 2, 3);
-    expect(spy).to.have.been.called.with(1, 2);
+    expect(spy).to.not.have.been.called.with(1);
+    expect(spy).to.not.have.been.called.with(1, 2);
     expect(spy).to.have.been.called.with(1, 2, 3);
-    expect(spy).to.have.been.not.called.with(1, 2, 3, 4);
+    expect(spy).to.not.have.been.called.with(2, 1);
+    expect(spy).to.not.have.been.called.with(1, 3);
+    expect(spy).to.not.have.been.called.with(3, 2, 1);
+    expect(spy).to.not.have.been.called.with(1, 2, 3, 4);
   });
 
-  it('should assert that a spy has been called exactly with given arguments at least once', function () {
+  it('should assert that every time the spy has been called with given arguments', function () {
     const fn = () => undefined;
     const spy = createSpy(fn);
-    expect(spy).to.have.been.not.called.with.exactly(1, 2);
-    spy();
-    expect(spy).to.have.been.not.called.with.exactly(1, 2);
+    expect(spy).to.not.have.been.called.always.with(1, 2, 3);
     spy(1, 2, 3);
-    expect(spy).to.have.been.not.called.with.exactly(1, 2);
-    expect(spy).to.have.been.called.with.exactly(1, 2, 3);
-    expect(spy).to.have.been.not.called.with.exactly(1, 2, 3, 4);
-  });
-
-  it('should assert that every time the spy has been called the argument list contained the given arguments', function () {
-    const fn = () => undefined;
-    const spy = createSpy(fn);
-    expect(spy).to.have.been.not.called.always.with(1, 2);
-    spy(1, 2);
-    expect(spy).to.have.been.called.always.with(1, 2);
-    spy(1, 2, 3);
-    expect(spy).to.have.been.called.always.with(1, 2);
-    expect(spy).to.have.been.not.called.always.with(1, 2, 3);
-  });
-
-  it('should assert that the spy has never been called with a different list of arguments than the one provided', function () {
-    const fn = () => undefined;
-    const spy = createSpy(fn);
-    expect(spy).to.have.been.not.called.always.with.exactly(1, 2);
-    spy(1, 2);
-    expect(spy).to.have.been.called.always.with.exactly(1, 2);
-    spy(1, 2, 3);
-    expect(spy).to.have.been.not.called.always.with.exactly(1, 2);
-    expect(spy).to.have.been.not.called.always.with.exactly(1, 2, 3);
+    expect(spy).to.have.been.called.always.with(1, 2, 3);
+    expect(spy).to.not.have.been.called.always.with(3, 2, 1);
+    expect(spy).to.not.have.been.called.always.with(1, 2);
+    expect(spy).to.not.have.been.called.always.with(1);
+    spy(1);
+    expect(spy).to.not.have.been.called.always.with(1, 2, 3);
+    expect(spy).to.not.have.been.called.always.with(1, 2);
+    expect(spy).to.not.have.been.called.always.with(1);
   });
 
   it('should assert that a spy has been called at least *n times', function () {

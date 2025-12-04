@@ -1,4 +1,3 @@
-
 declare global {
   namespace Chai {
     interface LanguageChains {
@@ -27,11 +26,11 @@ declare global {
       called: ChaiSpies.Called;
 
       /**
-       *  * ####.been
-       * * Assert that something has been spied on. Negation passes through.
-       * * ```ts
-       * * expect(spy).to.have.been.called();
-       * * spy.should.have.been.called();
+       * ####.been
+       * Assert that something has been spied on. Negation passes through.
+       * ```ts
+       * expect(spy).to.have.been.called();
+       * spy.should.have.been.called();
        * ```
        * Note that ```been``` can be used as a chainable method.
        */
@@ -201,58 +200,13 @@ declare global {
       interface With {
         /**
          * ####.with
-         * Assert that a spy has been called with a given argument at least once, even if more arguments were provided.
+         * Assert that a spy has been called with the given arguments.
          * ```ts
-         * spy('foo');
-         * expect(spy).to.have.been.called.with('foo');
-         * spy.should.have.been.called.with('foo');
-         * ```
-         * Will also pass for ```spy('foo', 'bar')``` and ```spy(); spy('foo')```.
-         * If used with multiple arguments, assert that a spy has been called with all the given arguments at least once.
-         * ```ts
-         * spy('foo', 'bar', 1);
-         * expect(spy).to.have.been.called.with('bar', 'foo');
-         * spy.should.have.been.called.with('bar', 'foo');
-         * ```
-         */
-        (
-          a: any,
-          b?: any,
-          c?: any,
-          d?: any,
-          e?: any,
-          f?: any,
-          g?: any,
-          h?: any,
-          i?: any,
-          j?: any,
-        ): Chai.Assertion;
-
-        /**
-         * ####.with.exactly
-         * Similar to .with, but will pass only if the list of arguments is exactly the same as the one provided.
-         * ```ts
-         * spy();
          * spy('foo', 'bar');
-         * expect(spy).to.have.been.called.with.exactly('foo', 'bar');
-         * spy.should.have.been.called.with.exactly('foo', 'bar');
+         * expect(spy).to.have.been.called.with('foo', 'bar');
          * ```
-         * Will not pass for ```spy('foo')```, ```spy('bar')```, ```spy('bar'); spy('foo')```, ```spy('foo'); spy('bar')```, ```spy('bar', 'foo')``` or ```spy('foo', 'bar', 1)```.
-         * Can be used for calls with a single argument too.
          */
-
-        exactly(
-          a?: any,
-          b?: any,
-          c?: any,
-          d?: any,
-          e?: any,
-          f?: any,
-          g?: any,
-          h?: any,
-          i?: any,
-          j?: any,
-        ): Chai.Assertion;
+        (...args: any[]): Chai.Assertion;
       }
 
       interface Always {
@@ -262,50 +216,14 @@ declare global {
       interface AlwaysWith {
         /**
          * ####.always.with
-         * Assert that every time the spy has been called the argument list contained the given arguments.
+         * Assert that every time the spy has been called the argument list strictly matched the given arguments (order and value).
          * ```ts
-         * spy('foo');
          * spy('foo', 'bar');
-         * spy(1, 2, 'foo');
-         * expect(spy).to.have.been.called.always.with('foo');
-         * spy.should.have.been.called.always.with('foo');
+         * spy('foo', 'bar', 'baz');
+         * expect(spy).to.have.been.called.always.with('foo', 'bar');
          * ```
          */
-        (
-          a: any,
-          b?: any,
-          c?: any,
-          d?: any,
-          e?: any,
-          f?: any,
-          g?: any,
-          h?: any,
-          i?: any,
-          j?: any,
-        ): Chai.Assertion;
-
-        /**
-         * ####.always.with.exactly
-         * Assert that the spy has never been called with a different list of arguments than the one provided.
-         * ```ts
-         * spy('foo');
-         * spy('foo');
-         * expect(spy).to.have.been.called.always.with.exactly('foo');
-         * spy.should.have.been.called.always.with.exactly('foo');
-         * ```
-         */
-        exactly(
-          a?: any,
-          b?: any,
-          c?: any,
-          d?: any,
-          e?: any,
-          f?: any,
-          g?: any,
-          h?: any,
-          i?: any,
-          j?: any,
-        ): Chai.Assertion;
+        (...args: any[]): Chai.Assertion;
       }
 
       interface At {

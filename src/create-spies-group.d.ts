@@ -37,7 +37,7 @@ export declare class SpiesGroup {
   on<TObj extends object, K extends MethodKey<TObj>>(
     target: TObj,
     methodName: K,
-    customImpl?: TObj[K],
+    customImpl?: AnyCallable,
   ): Spy<Extract<TObj[K], AnyCallable>>;
 
   /**
