@@ -259,6 +259,15 @@ expect(spy).to.not.be.called();
 Доступны методы для точного совпадения, а также для проверки
 минимального и максимального количества раз.
 
+- foo
+- bar
+- baz
+
+```
+some code
+```
+
+
 Модификаторы:
 
 - `once`: один раз;
@@ -268,9 +277,7 @@ expect(spy).to.not.be.called();
 - `max(n)` или `at.most(n)`: максимум n раз;
 - `above(n)` или `gt(n)`: больше n раз;
 - `below(n)` или `lt(n)`: меньше n раз;
-
-Пример:
-
+&ZeroWidthSpace;
 ```js
 // проверка точного количества вызовов
 expect(spy).to.have.been.called.once;
