@@ -7,7 +7,7 @@
  * @param {*} _
  */
 /* prettier-ignore */
-export function chaiSpiesPlugin(chai, _) {
+export function chaiSpies(chai, _) {
   const Assertion = chai.Assertion;
 
   Assertion.addProperty('spy', function () {

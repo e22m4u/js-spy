@@ -258,4 +258,4 @@ declare global {
 /**
  * Chai spies plugin.
  */
-export declare const chaiSpiesPlugin: any;
+export declare const chaiSpies: any;

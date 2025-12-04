@@ -1,10 +1,10 @@
 import {expect} from 'chai';
 import {createSpy} from '../create-spy.js';
-import {chaiSpiesPlugin} from './chai-spies-plugin.js';
+import {chaiSpies} from './chai-spies.js';
 
-describe('chaiSpiesPlugin', function () {
+describe('chaiSpies', function () {
   it('should be a function', function () {
-    expect(chaiSpiesPlugin).to.be.a('function');
+    expect(chaiSpies).to.be.a('function');
   });
 
   it('should assert that object is a spy', function () {

@@ -235,9 +235,9 @@ console.log(loggerSpy.called);
 
 ```js
 import chai from 'chai';
-import {chaiSpiesPlugin} from '@e22m4u/js-spy';
+import {chaiSpies} from '@e22m4u/js-spy';
 
-chai.use(chaiSpiesPlugin);
+chai.use(chaiSpies);
 ```
 
 Базовый пример:

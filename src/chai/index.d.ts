@@ -1,1 +1,1 @@
-export * from './chai-spies-plugin.js';
+export * from './chai-spies.js';

@@ -1,4 +1,4 @@
 import * as chai from 'chai';
-import {chaiSpiesPlugin} from './src/chai/index.js';
+import {chaiSpies} from './src/chai/index.js';
 
-chai.use(chaiSpiesPlugin);
+chai.use(chaiSpies);

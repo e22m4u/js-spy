@@ -22,14 +22,14 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var index_exports = {};
 __export(index_exports, {
   SpiesGroup: () => SpiesGroup,
-  chaiSpiesPlugin: () => chaiSpiesPlugin,
+  chaiSpies: () => chaiSpies,
   createSpiesGroup: () => createSpiesGroup,
   createSpy: () => createSpy
 });
 module.exports = __toCommonJS(index_exports);
 
-// src/chai/chai-spies-plugin.js
-function chaiSpiesPlugin(chai, _) {
+// src/chai/chai-spies.js
+function chaiSpies(chai, _) {
   const Assertion = chai.Assertion;
   Assertion.addProperty("spy", function() {
     this.assert(
@@ -267,7 +267,7 @@ function chaiSpiesPlugin(chai, _) {
   Assertion.overwriteMethod("max", max);
   Assertion.overwriteMethod("most", max);
 }
-__name(chaiSpiesPlugin, "chaiSpiesPlugin");
+__name(chaiSpies, "chaiSpies");
 
 // src/create-spy.js
 function _parseSpyArgs(target, methodNameOrImpl, customImplForMethod) {
@@ -459,7 +459,7 @@ __name(createSpiesGroup, "createSpiesGroup");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   SpiesGroup,
-  chaiSpiesPlugin,
+  chaiSpies,
   createSpiesGroup,
   createSpy
 });
