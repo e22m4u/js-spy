@@ -4,6 +4,14 @@
 создавать "шпионов" для функций или методов объектов, отслеживать их вызовы,
 аргументы, возвращаемые значения, а также управлять группой шпионов.
 
+- foo
+- bar
+- baz
+
+```
+some code
+```
+
 ## Содержание
 
 - [Установка](#установка)
@@ -36,11 +44,13 @@ npm install @e22m4u/js-spy
 Поддержка ESM и CommonJS стандартов.
 
 *ESM*
+
 ```js
 import {createSpy, createSpiesGroup} from '@e22m4u/js-spy';
 ```
 
 *CommonJS*
+
 ```js
 const {createSpy, createSpiesGroup} = require('@e22m4u/js-spy');
 ```
@@ -268,6 +278,7 @@ expect(spy).to.not.be.called();
 - `max(n)` или `at.most(n)`: максимум n раз;
 - `above(n)` или `gt(n)`: больше n раз;
 - `below(n)` или `lt(n)`: меньше n раз;
+
 
 ```js
 // проверка точного количества вызовов
