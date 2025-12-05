@@ -135,20 +135,20 @@ function chaiSpies(chai, _) {
     return n + "th";
   }
   __name(generateOrdinalNumber, "generateOrdinalNumber");
-  function assertWith() {
+  function assertWith(...expArgs) {
     new Assertion(this._obj).to.be.spy;
-    const expArgs = [].slice.call(arguments, 0), spy = this._obj, calls = spy.calls, always = _.flag(this, "spy always"), nthCall = _.flag(this, "spy nth call with");
+    const spy = this._obj, calls = spy.calls, always = _.flag(this, "spy always"), nthCall = _.flag(this, "spy nth call with");
     if (always) {
       const passed = numberOfCallsWith(spy, expArgs);
       this.assert(
-        arguments.length ? calls.length && passed === calls.length : calls.length === 0,
+        expArgs.length ? calls.length && passed === calls.length : calls.length === 0,
         "expected " + this._obj + " to have been always called with #{exp} but got " + passed + " out of " + calls.length,
         "expected " + this._obj + " to have not always been called with #{exp}",
         expArgs
       );
     } else if (nthCall) {
       const ordinalNumber = generateOrdinalNumber(nthCall), actArgs = calls[nthCall - 1];
-      new Assertion(this._obj).to.be.have.been.called.min(nthCall);
+      new Assertion(this._obj).to.have.been.called.min(nthCall);
       this.assert(
         nthCallWith(spy, nthCall - 1, expArgs),
         "expected " + this._obj + " to have been called at the " + ordinalNumber + " time with #{exp} but got #{act}",
@@ -179,9 +179,8 @@ function chaiSpies(chai, _) {
       _.flag(this, "spy always", true);
     }
   });
-  Assertion.addMethod("exactly", function() {
+  Assertion.addMethod("exactly", function(...args) {
     new Assertion(this._obj).to.be.spy;
-    const args = [].slice.call(arguments, 0);
     this.assert(
       this._obj.calls.length === args[0],
       "expected " + this._obj + " to have been called #{exp} times but got #{act}",

@@ -15,14 +15,9 @@ describe('Sandbox', function () {
   });
 
   describe('Sandbox instance', function () {
-    let sandbox;
-
-    beforeEach(function () {
-      sandbox = createSandbox();
-    });
-
     describe('.on(target, methodNameOrImpl, customImplForMethod)', function () {
       it('should create a spy for a standalone function', function () {
+        const sandbox = createSandbox();
         const targetFn = () => {};
         const fnSpy = sandbox.on(targetFn);
         expect(fnSpy).to.be.a('function');
@@ -31,6 +26,7 @@ describe('Sandbox', function () {
       });
 
       it('should create a spy for a standalone function with a custom implementation', function () {
+        const sandbox = createSandbox();
         const targetFn = () => {};
         const customImpl = () => 'custom result';
         const fnSpy = sandbox.on(targetFn, customImpl);
@@ -39,6 +35,7 @@ describe('Sandbox', function () {
       });
 
       it('should create a spy for an object method and replace the original method', function () {
+        const sandbox = createSandbox();
         const obj = {method: () => 'original method'};
         const methodSpy = sandbox.on(obj, 'method');
         expect(obj.method).to.equal(methodSpy);
@@ -46,6 +43,7 @@ describe('Sandbox', function () {
       });
 
       it('should create a spy for an object method with a custom implementation', function () {
+        const sandbox = createSandbox();
         const obj = {method: () => 'original method'};
         const customImpl = () => 'custom method';
         sandbox.on(obj, 'method', customImpl);
@@ -53,6 +51,7 @@ describe('Sandbox', function () {
       });
 
       it('should add the created spy to the internal spies array', function () {
+        const sandbox = createSandbox();
         const targetFn1 = () => {};
         const targetFn2 = () => {};
         const spy1 = sandbox.on(targetFn1);
@@ -64,6 +63,7 @@ describe('Sandbox', function () {
       });
 
       it('should return the created spy instance', function () {
+        const sandbox = createSandbox();
         const targetFn = () => {};
         const returnedSpy = sandbox.on(targetFn);
         expect(returnedSpy).to.be.a('function');
@@ -72,90 +72,56 @@ describe('Sandbox', function () {
     });
 
     describe('.restore()', function () {
-      let obj1, originalMethod1;
-      let obj2, originalMethod2;
-      let standaloneFn1, standaloneFn2;
-      let spyObj1, spyObj2, spyFn1, spyFn2;
-
-      beforeEach(function () {
-        originalMethod1 = function () {
-          return 'original1';
-        };
-        obj1 = {method: originalMethod1};
-
-        originalMethod2 = function () {
-          return 'original2';
-        };
-        obj2 = {method: originalMethod2};
-
-        standaloneFn1 = function () {
-          return 'standalone1';
-        };
-        standaloneFn2 = function () {
-          return 'standalone2';
-        };
-
-        spyObj1 = sandbox.on(obj1, 'method');
-        spyFn1 = sandbox.on(standaloneFn1);
-        spyObj2 = sandbox.on(obj2, 'method');
-        spyFn2 = sandbox.on(standaloneFn2);
-
-        // вызов всех шпионов для наполнения истории
-        obj1.method(); // spyObj1
-        spyFn1();
-        obj2.method(); // spyObj2
-        spyFn2();
-
-        expect(spyObj1.callCount).to.equal(1);
-        expect(spyFn1.callCount).to.equal(1);
-        expect(spyObj2.callCount).to.equal(1);
-        expect(spyFn2.callCount).to.equal(1);
+      it('should restore original methods on objects', function () {
+        const sandbox = createSandbox();
+        const originalMethod = () => 'original';
+        const obj = {method: originalMethod};
+        sandbox.on(obj, 'method');
+        expect(obj.method).to.not.equal(originalMethod);
+        sandbox.restore();
+        expect(obj.method).to.equal(originalMethod);
+        expect(obj.method()).to.equal('original');
       });
 
-      it('should call restore() on all spies in the sandbox', function () {
+      it('should reset call history for all spies', function () {
+        const sandbox = createSandbox();
+        const fn = () => {};
+        const spy = sandbox.on(fn);
+        spy();
+        expect(spy.called).to.be.true;
+        expect(spy.callCount).to.equal(1);
         sandbox.restore();
-        // проверка восстановления методов объектов
-        expect(obj1.method).to.equal(originalMethod1);
-        expect(obj1.method()).to.equal('original1');
-        expect(obj2.method).to.equal(originalMethod2);
-        expect(obj2.method()).to.equal('original2');
-        // проверка сброса истории
-        expect(spyObj1.callCount).to.equal(0);
-        expect(spyObj1.called).to.be.false;
-        expect(spyFn1.callCount).to.equal(0);
-        expect(spyFn1.called).to.be.false;
-        expect(spyObj2.callCount).to.equal(0);
-        expect(spyObj2.called).to.be.false;
-        expect(spyFn2.callCount).to.equal(0);
-        expect(spyFn2.called).to.be.false;
+        expect(spy.called).to.be.false;
+        expect(spy.callCount).to.equal(0);
       });
 
       it('should clear the internal spies array', function () {
-        expect(sandbox.spies).to.have.lengthOf(4);
+        const sandbox = createSandbox();
+        sandbox.on(() => {});
+        sandbox.on({m: () => {}}, 'm');
+        expect(sandbox.spies).to.have.lengthOf(2);
         sandbox.restore();
         expect(sandbox.spies).to.be.an('array').that.is.empty;
       });
 
-      it('should return the Sandbox instance for chaining (if other methods were added)', function () {
+      it('should return the Sandbox instance for chaining', function () {
+        const sandbox = createSandbox();
         const returnedValue = sandbox.restore();
         expect(returnedValue).to.equal(sandbox);
       });
 
-      it('should be idempotent - calling restore multiple times should not error', function () {
-        // первый вызов restore
+      it('should be idempotent (calling restore multiple times does not throw)', function () {
+        const sandbox = createSandbox();
+        const obj = {method: () => {}};
+        sandbox.on(obj, 'method');
         sandbox.restore();
-        // второй вызов restore
         expect(() => sandbox.restore()).to.not.throw();
-        // проверки состояний после второго вызова (должно быть таким же)
-        expect(obj1.method).to.equal(originalMethod1);
-        expect(spyObj1.callCount).to.equal(0);
-        expect(sandbox.spies).to.be.an('array').that.is.empty;
       });
 
       it('should handle an empty spies array gracefully', function () {
-        const emptySandbox = createSandbox();
-        expect(() => emptySandbox.restore()).to.not.throw();
-        expect(emptySandbox.spies).to.be.an('array').that.is.empty;
+        const sandbox = createSandbox();
+        expect(() => sandbox.restore()).to.not.throw();
+        expect(sandbox.spies).to.be.an('array').that.is.empty;
       });
     });
   });

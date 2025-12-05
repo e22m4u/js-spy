@@ -126,10 +126,9 @@ export function chaiSpies(chai, _) {
     return n + 'th';
   }
 
-  function assertWith() {
+  function assertWith(...expArgs) {
     new Assertion(this._obj).to.be.spy;
-    const expArgs = [].slice.call(arguments, 0)
-      , spy = this._obj
+    const spy = this._obj
       , calls = spy.calls
       , always = _.flag(this, 'spy always')
       , nthCall = _.flag(this, 'spy nth call with');
@@ -137,7 +136,7 @@ export function chaiSpies(chai, _) {
     if (always) {
       const passed = numberOfCallsWith(spy, expArgs);
       this.assert(
-          arguments.length
+          expArgs.length
             ? calls.length && passed === calls.length
             : calls.length === 0
         , 'expected ' + this._obj + ' to have been always called with #{exp} but got ' + passed + ' out of ' + calls.length
@@ -147,7 +146,7 @@ export function chaiSpies(chai, _) {
     } else if (nthCall) {
       const ordinalNumber = generateOrdinalNumber(nthCall),
           actArgs = calls[nthCall - 1];
-      new Assertion(this._obj).to.be.have.been.called.min(nthCall);
+      new Assertion(this._obj).to.have.been.called.min(nthCall);
       this.assert(
           nthCallWith(spy, nthCall - 1, expArgs)
         , 'expected ' + this._obj + ' to have been called at the ' + ordinalNumber + ' time with #{exp} but got #{act}'
@@ -180,9 +179,8 @@ export function chaiSpies(chai, _) {
     }
   });
 
-  Assertion.addMethod('exactly', function () {
+  Assertion.addMethod('exactly', function (...args) {
     new Assertion(this._obj).to.be.spy;
-    const args = [].slice.call(arguments, 0);
     this.assert(
         this._obj.calls.length === args[0]
       , 'expected ' + this._obj + ' to have been called #{exp} times but got #{act}'
@@ -196,7 +194,6 @@ export function chaiSpies(chai, _) {
     return function (n) {
       if (this._obj.__isSpy) {
         new Assertion(this._obj).to.be.spy;
-
         this.assert(
             this._obj.calls.length > n
           , 'expected ' + this._obj + ' to have been called more than #{exp} times but got #{act}'
