@@ -547,7 +547,7 @@ sandbox.restore();
 // service.process теперь оригинальный метод
 console.log(processSpy.callCount); // 0
 console.log(utilSpy.callCount);    // 0
-console.log(sandbox.spies.length);   // 0
+console.log(sandbox.spies.length); // 0
 ```
 
 ## Тесты
