@@ -1,10 +1,10 @@
 import {createSpy} from './create-spy.js';
 
 /**
- * Группа позволяет создавать шпионов
- * и управлять ими как одним.
+ * Песочница позволяет создавать шпионов
+ * и управлять ими как единым целым.
  */
-export class SpiesGroup {
+export class Sandbox {
   /**
    * Constructor.
    */
@@ -14,7 +14,7 @@ export class SpiesGroup {
 
   /**
    * Создает шпиона для отдельной функции
-   * или метода объекта и добавляет его в группу.
+   * или метода объекта и добавляет его в песочницу.
    *
    * @param {Function|object} [target]
    * @param {Function|string} [methodNameOrImpl]
@@ -29,9 +29,8 @@ export class SpiesGroup {
 
   /**
    * Восстановление всех оригинальных методов объектов,
-   * для которых были созданы шпионы в этой группе,
-   * и сброс истории вызовов для всех шпионов в группе.
-   * Очищает внутренний список шпионов.
+   * для которых были созданы шпионы в данной песочнице,
+   * и сброс истории вызовов.
    *
    * @returns {this}
    */
@@ -43,10 +42,10 @@ export class SpiesGroup {
 }
 
 /**
- * Создание группы шпионов.
+ * Создание песочницы.
  *
- * @returns {SpiesGroup}
+ * @returns {Sandbox}
  */
-export function createSpiesGroup() {
-  return new SpiesGroup();
+export function createSandbox() {
+  return new Sandbox();
 }

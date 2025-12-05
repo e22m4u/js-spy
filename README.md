@@ -20,10 +20,10 @@
     - [spy.called](#spycalled)
     - [spy.callCount](#spycallcount)
     - [spy.restore()](#spyrestore)
-  - [Функция `createSpiesGroup`](#функция-createspiesgroup)
-  - [Методы группы шпионов](#методы-группы-шпионов)
-    - [group.on(...)](#groupon)
-    - [group.restore()](#grouprestore)
+  - [Функция `createSandbox`](#функция-createsandbox)
+  - [Методы песочницы](#методы-песочницы)
+    - [sandbox.on(...)](#sandboxon)
+    - [sandbox.restore()](#sandboxrestore)
 - [Тесты](#тесты)
 - [Лицензия](#лицензия)
 
@@ -38,13 +38,13 @@ npm install @e22m4u/js-spy
 *ESM*
 
 ```js
-import {createSpy, createSpiesGroup} from '@e22m4u/js-spy';
+import {createSpy, createSandbox} from '@e22m4u/js-spy';
 ```
 
 *CommonJS*
 
 ```js
-const {createSpy, createSpiesGroup} = require('@e22m4u/js-spy');
+const {createSpy, createSandbox} = require('@e22m4u/js-spy');
 ```
 
 ## Использование
@@ -167,7 +167,7 @@ addSpy.restore();
 например, восстановить их все разом.
 
 ```js
-import {createSpiesGroup} from '@e22m4u/js-spy';
+import {createSandbox} from '@e22m4u/js-spy';
 
 // объект с методами для отслеживания
 const service = {
@@ -186,16 +186,16 @@ function standaloneLogger(message) {
   console.log(`LOG: ${message}`);
 }
 
-// создание группы
-const group = createSpiesGroup();
+// создание песочницы
+const sandbox = createSandbox();
 
-// добавление шпионов в группу:
-//   метод group.on() работает аналогично createSpy(),
-//   но добавляет шпиона в группу и возвращает созданного
+// добавление шпионов в песочницу:
+//   метод sandbox.on() работает аналогично createSpy(),
+//   но добавляет шпиона в песочницу и возвращает созданного
 //   шпиона
-const fetchDataSpy = group.on(service, 'fetchData');
-const processItemSpy = group.on(service, 'processItem');
-const loggerSpy = group.on(standaloneLogger);
+const fetchDataSpy = sandbox.on(service, 'fetchData');
+const processItemSpy = sandbox.on(service, 'processItem');
+const loggerSpy = sandbox.on(standaloneLogger);
 
 // так как методы заменяются шпионами прямо на объекте,
 // допустимо вызывать непосредственно их
@@ -210,14 +210,14 @@ console.log(fetchDataSpy.callCount);   // 1
 console.log(processItemSpy.callCount); // 1
 console.log(loggerSpy.callCount);      // 1
 
-// восстановление всех шпионов в группе:
+// восстановление всех шпионов песочницы:
 //   - оригинальные методы service.fetchData
 //     и service.processItem будут восстановлены
 //   - история вызовов (callCount, called, calls и т.д.)
 //     для fetchDataSpy, processItemSpy и loggerSpy
 //     будет сброшена
-//   - внутренний список шпионов в группе будет очищен
-group.restore();
+//   - внутренний список шпионов песочницы будет очищен
+sandbox.restore();
 
 console.log(service.fetchData === fetchDataSpy);
 // false (оригинальный метод восстановлен)
@@ -345,7 +345,7 @@ expect(spy).on.nth(10).be.called.with('result');
 
 ### Свойства и методы шпиона
 
-Каждая функция-шпион, возвращаемая `createSpy` (или `group.on`), обладает
+Каждая функция-шпион, возвращаемая `createSpy` (или `sandbox.on`), обладает
 следующими свойствами и методами:
 
 #### spy(...args)
@@ -458,31 +458,31 @@ fnSpy.restore();
 console.log(fnSpy.callCount); // 0 (история сброшена)
 ```
 
-### Функция `createSpiesGroup`
+### Функция `createSandbox`
 
-Фабричная функция для создания экземпляра `SpiesGroup` (группа шпионов).
+Фабричная функция для создания экземпляра песочницы.
 
 ```js
-import {createSpiesGroup} from '@e22m4u/js-spy';
+import {createSandbox} from '@e22m4u/js-spy';
 
-const group = createSpiesGroup();
+const sandbox = createSandbox();
 ```
 
-### Методы группы шпионов
+### Методы песочницы
 
-Экземпляр `SpiesGroup` имеет следующие методы:
+Экземпляр `Sandbox` имеет следующие методы:
 
-#### group.on(...)
+#### sandbox.on(...)
 
-Создает шпиона и добавляет его в группу.
+Создает шпиона и добавляет его в песочницу.
 
 Сигнатуры вызова:
 
 1.  Отслеживание отдельной функции:  
-    `group.on(targetFn, [customImpl])`
+    `sandbox.on(targetFn, [customImpl])`
 
 2.  Отслеживание метода объекта:  
-    `group.on(targetObject, methodName, [customImpl])`
+    `sandbox.on(targetObject, methodName, [customImpl])`
 
 Возвращает:
 
@@ -491,34 +491,33 @@ const group = createSpiesGroup();
 Пример:
 
 ```js
-const group = createSpiesGroup();
+const sandbox = createSandbox();
 const obj = {greet: () => 'Hello'};
 
-const greetSpy = group.on(obj, 'greet');
-// obj.greet теперь шпион, и greetSpy добавлен в группу
+const greetSpy = sandbox.on(obj, 'greet');
+// obj.greet теперь шпион, и greetSpy добавлен в песочницу
 obj.greet();
 console.log(greetSpy.called); // true
 ```
 
-#### group.restore()
+#### sandbox.restore()
 
-Вызывает метод `restore()` для каждого шпиона, содержащегося в группе.
+Вызывает метод `restore()` для каждого шпиона, содержащегося в песочнице.
 Это означает, что:
 
 - Все оригинальные методы объектов, для которых были созданы шпионы
-  в этой группе, будут восстановлены.
-- История вызовов всех шпионов в группе будет сброшена.
-- Внутренний список шпионов в самой группе будет очищен, делая группу
-  готовой к повторному использованию (если необходимо).
+  в данной песочнице, будут восстановлены.
+- История вызовов всех шпионов в песочнице будет сброшена.
+- Внутренний список шпионов в песочнице будет очищен.
 
 Возвращает:
 
-- `this` (экземпляр `SpiesGroup`) для возможной цепочки вызовов.
+- `this` для возможной цепочки вызовов.
 
 Пример:
 
 ```js
-const group = createSpiesGroup();
+const sandbox = createSandbox();
 
 // объект с методом для отслеживания
 const service = {
@@ -529,8 +528,8 @@ const service = {
 function utilFn() { /* ... */ }
 
 // создание шпионов
-const processSpy = group.on(service, 'process');
-const utilSpy = group.on(utilFn);
+const processSpy = sandbox.on(service, 'process');
+const utilSpy = sandbox.on(utilFn);
 
 // вызов отслеживаемого метода
 // и шпиона одиночной функции
@@ -543,12 +542,12 @@ console.log(utilSpy.callCount);    // 1
 
 // восстановление шпионов
 // и сброс истории
-group.restore();
+sandbox.restore();
 
 // service.process теперь оригинальный метод
 console.log(processSpy.callCount); // 0
 console.log(utilSpy.callCount);    // 0
-console.log(group.spies.length);   // 0
+console.log(sandbox.spies.length);   // 0
 ```
 
 ## Тесты

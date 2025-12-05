@@ -21,9 +21,9 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.js
 var index_exports = {};
 __export(index_exports, {
-  SpiesGroup: () => SpiesGroup,
+  Sandbox: () => Sandbox,
   chaiSpies: () => chaiSpies,
-  createSpiesGroup: () => createSpiesGroup,
+  createSandbox: () => createSandbox,
   createSpy: () => createSpy
 });
 module.exports = __toCommonJS(index_exports);
@@ -414,8 +414,8 @@ function createSpy(target = void 0, methodNameOrImpl = void 0, customImplForMeth
 }
 __name(createSpy, "createSpy");
 
-// src/create-spies-group.js
-var _SpiesGroup = class _SpiesGroup {
+// src/create-sandbox.js
+var _Sandbox = class _Sandbox {
   /**
    * Constructor.
    */
@@ -424,7 +424,7 @@ var _SpiesGroup = class _SpiesGroup {
   }
   /**
    * Создает шпиона для отдельной функции
-   * или метода объекта и добавляет его в группу.
+   * или метода объекта и добавляет его в песочницу.
    *
    * @param {Function|object} [target]
    * @param {Function|string} [methodNameOrImpl]
@@ -438,9 +438,8 @@ var _SpiesGroup = class _SpiesGroup {
   }
   /**
    * Восстановление всех оригинальных методов объектов,
-   * для которых были созданы шпионы в этой группе,
-   * и сброс истории вызовов для всех шпионов в группе.
-   * Очищает внутренний список шпионов.
+   * для которых были созданы шпионы в данной песочнице,
+   * и сброс истории вызовов.
    *
    * @returns {this}
    */
@@ -450,16 +449,16 @@ var _SpiesGroup = class _SpiesGroup {
     return this;
   }
 };
-__name(_SpiesGroup, "SpiesGroup");
-var SpiesGroup = _SpiesGroup;
-function createSpiesGroup() {
-  return new SpiesGroup();
+__name(_Sandbox, "Sandbox");
+var Sandbox = _Sandbox;
+function createSandbox() {
+  return new Sandbox();
 }
-__name(createSpiesGroup, "createSpiesGroup");
+__name(createSandbox, "createSandbox");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  SpiesGroup,
+  Sandbox,
   chaiSpies,
-  createSpiesGroup,
+  createSandbox,
   createSpy
 });
