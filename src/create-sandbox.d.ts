@@ -14,6 +14,9 @@ export declare class Sandbox {
   /**
    * Создает шпиона для отдельной функции
    * и добавляет его в песочницу.
+   * 
+   * @param target
+   * @param customImpl
    */
   on<TFunc extends AnyCallable>(
     target: TFunc,
@@ -23,6 +26,10 @@ export declare class Sandbox {
   /**
    * Создает шпиона для метода объекта, добавляет
    * его в песочницу и заменяет оригинальный метод.
+   * 
+   * @param target
+   * @param methodName
+   * @param customImpl
    */
   on<TObj extends object, K extends MethodKey<TObj>>(
     target: TObj,

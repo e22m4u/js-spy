@@ -41,6 +41,8 @@ export interface CallInfo<Args extends any[] = any[], Return = any> {
 export interface Spy<TFunc extends AnyCallable = AnyCallable> {
   /**
    * Сама функция-шпион.
+   * 
+   * @param args
    */
   (...args: Parameters<TFunc>): ReturnType<TFunc>;
 
