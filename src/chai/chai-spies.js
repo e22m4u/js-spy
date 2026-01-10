@@ -32,7 +32,7 @@ export function chaiSpies(chai, _) {
       );
     } else {
       this.assert(
-          spy.called === true
+          spy.isCalled === true
         , 'expected ' + this._obj + ' to have been called'
         , 'expected ' + this._obj + ' to not have been called'
       );

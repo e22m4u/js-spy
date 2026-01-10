@@ -74,7 +74,7 @@ describe('createSpy', function () {
 
     it('should not be called initially', function () {
       const spy = createSpy(function () {});
-      expect(spy.called).to.be.false;
+      expect(spy.isCalled).to.be.false;
       expect(spy.callCount).to.be.eq(0);
     });
 
@@ -83,7 +83,7 @@ describe('createSpy', function () {
       const spy = createSpy(sum);
       spy(1, 2);
       spy(3, 4);
-      expect(spy.called).to.be.true;
+      expect(spy.isCalled).to.be.true;
       expect(spy.callCount).to.be.eq(2);
       expect(spy.calls[0].args).to.deep.equal([1, 2]);
       expect(spy.calls[1].args).to.deep.equal([3, 4]);
@@ -94,7 +94,7 @@ describe('createSpy', function () {
       const spy = createSpy(originalFn);
       const result = spy();
       expect(result).to.be.eq('original value');
-      expect(spy.called).to.be.true;
+      expect(spy.isCalled).to.be.true;
     });
 
     it('should use the custom implementation if provided', function () {
@@ -103,7 +103,7 @@ describe('createSpy', function () {
       const spy = createSpy(originalFn, customImpl);
       const result = spy();
       expect(result).to.be.eq('custom');
-      expect(spy.called).to.be.true;
+      expect(spy.isCalled).to.be.true;
     });
 
     it('should preserve `this` context for the original function', function () {
@@ -134,11 +134,11 @@ describe('createSpy', function () {
         const standaloneFn = () => 'standalone result';
         const fnSpy = createSpy(standaloneFn);
         fnSpy('call standalone');
-        expect(fnSpy.called).to.be.true;
+        expect(fnSpy.isCalled).to.be.true;
         expect(fnSpy.callCount).to.be.eq(1);
         expect(() => fnSpy.restore()).to.not.throw();
         expect(fnSpy.callCount).to.be.eq(0);
-        expect(fnSpy.called).to.be.false;
+        expect(fnSpy.isCalled).to.be.false;
       });
     });
   });
@@ -193,14 +193,14 @@ describe('createSpy', function () {
         };
         const spy = createSpy(obj, 'method');
         obj.method('call before restore');
-        expect(spy.called).to.be.true;
+        expect(spy.isCalled).to.be.true;
         expect(obj.method).to.be.eq(spy);
         spy.restore();
         expect(obj.method).to.be.eq(originalMethodImpl);
         const result = obj.method('call after restore');
         expect(result).to.be.eq('original: TestObj call after restore');
         expect(spy.callCount).to.be.eq(0);
-        expect(spy.called).to.be.false;
+        expect(spy.isCalled).to.be.false;
       });
 
       it('should restore an "own" property by assigning the original value back', function () {
@@ -266,18 +266,18 @@ describe('createSpy', function () {
       });
     });
 
-    describe('.callCount and .called', function () {
-      it('should have callCount = 0 and called = false initially', function () {
+    describe('.callCount and .isCalled', function () {
+      it('should have callCount = 0 and isCalled = false initially', function () {
         const spy = createSpy(() => {});
         expect(spy.callCount).to.be.eq(0);
-        expect(spy.called).to.be.false;
+        expect(spy.isCalled).to.be.false;
       });
 
       it('should update after calls', function () {
         const spy = createSpy(() => {});
         spy(1, 1);
         expect(spy.callCount).to.be.eq(1);
-        expect(spy.called).to.be.true;
+        expect(spy.isCalled).to.be.true;
         spy(2, 2);
         expect(spy.callCount).to.be.eq(2);
       });

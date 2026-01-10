@@ -17,7 +17,7 @@
   - [Свойства и методы шпиона](#свойства-и-методы-шпиона)
     - [spy(...args)](#spyargs)
     - [spy.calls](#spycalls)
-    - [spy.called](#spycalled)
+    - [spy.isCalled](#spyiscalled)
     - [spy.callCount](#spycallcount)
     - [spy.restore()](#spyrestore)
   - [Функция `createSandbox`](#функция-createsandbox)
@@ -71,7 +71,7 @@ greetSpy('World');
 greetSpy('JavaScript');
 
 // количество вызовов
-console.log(greetSpy.called);  // true
+console.log(greetSpy.isCalled);  // true
 console.log(greetSpy.callCount); // 2
 
 // аргументы и возвращаемое значение первого вызова
@@ -127,7 +127,7 @@ calculator.add(2, 1);
 console.log(calculator.value); // 3
 
 // количество вызовов
-console.log(addSpy.called);  // true
+console.log(addSpy.isCalled);  // true
 console.log(addSpy.callCount); // 2
 
 // аргументы и возвращаемое значение первого вызова
@@ -213,7 +213,7 @@ console.log(loggerSpy.callCount);      // 1
 // восстановление всех шпионов песочницы:
 //   - оригинальные методы service.fetchData
 //     и service.processItem будут восстановлены
-//   - история вызовов (callCount, called, calls и т.д.)
+//   - история вызовов (calls, callCount, isCalled и т.д.)
 //     для fetchDataSpy, processItemSpy и loggerSpy
 //     будет сброшена
 //   - внутренний список шпионов песочницы будет очищен
@@ -223,7 +223,7 @@ console.log(service.fetchData === fetchDataSpy);
 // false (оригинальный метод восстановлен)
 console.log(fetchDataSpy.callCount);
 // 0 (история сброшена)
-console.log(loggerSpy.called);
+console.log(loggerSpy.isCalled);
 // false (история сброшена)
 ```
 
@@ -392,16 +392,16 @@ console.log(spy.calls);
 // ]
 ```
 
-#### spy.called
+#### spy.isCalled
 
 - Тип: `boolean` (только для чтения)
 - Описание: Указывает, был ли шпион вызван хотя бы один раз.
 
 ```js
 const spy = createSpy();
-console.log(spy.called); // false
+console.log(spy.isCalled); // false
 spy();
-console.log(spy.called); // true
+console.log(spy.isCalled); // true
 ```
 
 #### spy.callCount
@@ -424,7 +424,7 @@ console.log(spy.callCount); // 2
 - Восстанавливает оригинальный метод, если шпион был создан
   для метода объекта.
 - Сбрасывает историю вызовов шпиона (`callCount` становится 0,
-  `called` становится `false`, и все записи о вызовах очищаются).
+  `isCalled` становится `false`, и все записи о вызовах очищаются).
 - Если шпион был создан для отдельной функции (а не для метода объекта),
   восстановление метода не происходит (так как нечего восстанавливать),
   но история вызовов все равно сбрасывается.
@@ -497,7 +497,7 @@ const obj = {greet: () => 'Hello'};
 const greetSpy = sandbox.on(obj, 'greet');
 // obj.greet теперь шпион, и greetSpy добавлен в песочницу
 obj.greet();
-console.log(greetSpy.called); // true
+console.log(greetSpy.isCalled); // true
 ```
 
 #### sandbox.restore()

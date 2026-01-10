@@ -88,10 +88,10 @@ describe('Sandbox', function () {
         const fn = () => {};
         const spy = sandbox.on(fn);
         spy();
-        expect(spy.called).to.be.true;
+        expect(spy.isCalled).to.be.true;
         expect(spy.callCount).to.equal(1);
         sandbox.restore();
-        expect(spy.called).to.be.false;
+        expect(spy.isCalled).to.be.false;
         expect(spy.callCount).to.equal(0);
       });
 

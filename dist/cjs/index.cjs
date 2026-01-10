@@ -52,7 +52,7 @@ function chaiSpies(chai, _) {
       );
     } else {
       this.assert(
-        spy.called === true,
+        spy.isCalled === true,
         "expected " + this._obj + " to have been called",
         "expected " + this._obj + " to not have been called"
       );
@@ -387,7 +387,7 @@ function createSpy(target = void 0, methodNameOrImpl = void 0, customImplForMeth
     enumerable: true,
     configurable: false
   });
-  Object.defineProperty(spy, "called", {
+  Object.defineProperty(spy, "isCalled", {
     get: /* @__PURE__ */ __name(() => callLog.count > 0, "get"),
     enumerable: true,
     configurable: false
