@@ -85,9 +85,13 @@ function chaiSpies(chai, _) {
     );
   });
   function nthCallWith(spy, n, expArgs) {
-    if (spy.calls.length <= n) return false;
+    if (spy.calls.length <= n) {
+      return false;
+    }
     const actArgs = spy.calls[n].args;
-    if (actArgs.length !== expArgs.length) return false;
+    if (actArgs.length !== expArgs.length) {
+      return false;
+    }
     for (let i = 0; i < expArgs.length; i++) {
       if (!_.eql(actArgs[i], expArgs[i])) {
         return false;
@@ -129,9 +133,15 @@ function chaiSpies(chai, _) {
     }
   });
   function generateOrdinalNumber(n) {
-    if (n === 1) return "first";
-    if (n === 2) return "second";
-    if (n === 3) return "third";
+    if (n === 1) {
+      return "first";
+    }
+    if (n === 2) {
+      return "second";
+    }
+    if (n === 3) {
+      return "third";
+    }
     return n + "th";
   }
   __name(generateOrdinalNumber, "generateOrdinalNumber");
