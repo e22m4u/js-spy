@@ -10,10 +10,10 @@
     "test",
     "unit"
   ],
-  "homepage": "https://gitrepos.ru/e22m4u/js-spy",
+  "homepage": "https://gitverse.ru/e22m4u/js-spy",
   "repository": {
     "type": "git",
-    "url": "git+https://gitrepos.ru/e22m4u/js-spy.git"
+    "url": "git+https://gitverse.ru/e22m4u/js-spy.git"
   },
   "type": "module",
   "types": "./src/index.d.ts",
