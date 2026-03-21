@@ -8,7 +8,8 @@
     "spy",
     "call",
     "test",
-    "unit"
+    "unit",
+    "chai"
   ],
   "homepage": "https://gitverse.ru/e22m4u/js-spy",
   "repository": {
