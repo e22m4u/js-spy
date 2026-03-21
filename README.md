@@ -188,7 +188,7 @@ const api = {
 
 // подмена оригинального метода
 // пользовательской функцией
-const fetchSpy = createSpy(api, 'fetchData', (id) => {
+const fetchSpy = createSpy(api, 'fetchData', id => {
   return `Mocked data for ${id}`;
 });
 
