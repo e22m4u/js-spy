@@ -255,9 +255,11 @@ chai.use(chaiSpies);
 Базовый пример:
 
 ```js
-// проверка, является ли объект шпионом
-expect(fn).to.be.spy;
-expect(obj).to.not.be.spy;
+const spy = createSpy(myFunc);
+
+// проверка, является ли значение шпионом
+expect(spy).to.be.spy;
+expect(spy).to.not.be.spy;
 
 // проверка, что шпион был вызван хотя бы раз
 expect(spy).to.be.called();
