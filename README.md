@@ -169,6 +169,41 @@ addSpy.restore();
 // calculator.add теперь снова оригинальный метод
 ```
 
+### Подмена реализации метода
+
+Чтобы заменить реализацию, в функцию `createSpy` (или `sandbox.on`) третьим
+аргументом передается новая функция. При обращении к методу шпион перехватывает
+вызов, сохраняет переданные параметры, выполняет пользовательскую функцию
+вместо исходной и возвращает ее результат.
+
+```js
+import {createSpy} from '@e22m4u/js-spy';
+
+const api = {
+  fetchData(id) {
+    // имитация ресурсоемкой операции
+    return `Real data for ${id}`;
+  }
+};
+
+// подмена оригинального метода
+// пользовательской функцией
+const fetchSpy = createSpy(api, 'fetchData', (id) => {
+  return `Mocked data for ${id}`;
+});
+
+// вызов метода возвращает результат
+// подмененной реализации
+const result = api.fetchData(42);
+
+console.log(result); // "Mocked data for 42"
+
+// шпион фиксирует информацию о вызове
+console.log(fetchSpy.isCalled);             // true
+console.log(fetchSpy.calls[0].args);        // [42]
+console.log(fetchSpy.calls[0].returnValue); // "Mocked data for 42"
+```
+
 ### Управление группой шпионов
 
 Создание изолированной среды осуществляется с помощью функции `createSandbox`.
